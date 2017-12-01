@@ -28,6 +28,8 @@ Avec 1 le nombre de pigeons et 2 le nombre de pigeonniers (cabanes)
     une ligne de matrice = un pigeon
     une colonne de matrice = un pigeonnier
 
+| p et c | Nombre de sol |
+|-------|--------------|
 | 2p 2c | 2 solutions  |
 | 3p 3c | 6 solutions  |
 | 4p 4c | 24 solutions |
