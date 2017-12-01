@@ -5,13 +5,11 @@ Application au problème des pigeons et des pigeonniers
 
 ## Compiler
 
-make
+    make
 
 ## Exécuter
 
-
-./bin/main.exe -p 1 -c 2
-
+    ./bin/main.exe -p 1 -c 2
 
 Avec 1 le nombre de pigeons et 2 le nombre de pigeonniers (cabanes)
 
@@ -30,8 +28,7 @@ c = pigeonnier
 une ligne de matrice = un pigeon
 une colonne de matrice = un pigeonnier
 
-2p 2c		2 solutions
-3p 3c		6 solutions
-4p 4c		24 solutions
-6p 6c
-
+| 2p 2c | 2 solutions  |
+| 3p 3c | 6 solutions  |
+| 4p 4c | 24 solutions |
+| 6p 6c | |
