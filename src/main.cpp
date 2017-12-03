@@ -27,16 +27,22 @@ void solver_brut(vector<bool*> &solutions, const int cabanes, const int pigeons)
   const int const_bitset_size = 9999999; // en remplacement de nb_cases pour l'initialisation du bitset
 
   // Génération de toutes les matrices possibles
+  cout << "Génération des " << nb_possibilites << " matrices" << endl;
   vector<bool*> possibilites;
+
   bool *possibilite_bool;
-  for (int i = 0; i <= nb_possibilites; ++i) {
+  for (unsigned int i = 0; i <= nb_possibilites; ++i) {
     bitset<const_bitset_size> possibilite_bit = bitset<const_bitset_size>(i);
     possibilite_bool = new bool[nb_cases];
     for (int j = 0; j < nb_cases; ++j) possibilite_bool[j] = (possibilite_bit[j] == 1) ? true : false;
     possibilites.push_back(possibilite_bool);
+    if (i % 100 == 0 || i == nb_possibilites) cout << "\r  " << i*100/nb_possibilites << " %";
   }
+  cout << endl;
 
   // Nettoyage pour ne garder que les solutions (application des contraints)
+  cout << "Application des contraintes sur les matrices pour ne garder que les solutions" << endl;
+  unsigned int i = 0;
   while (possibilites.size() > 0) {
     bool* sol = possibilites.back();
     possibilites.pop_back();
@@ -71,7 +77,11 @@ void solver_brut(vector<bool*> &solutions, const int cabanes, const int pigeons)
     else {
       delete[] sol;
     }
+    if (i % 100 == 0 || possibilites.size() == 0) cout << "\r  " << i*100/nb_possibilites << " %";
+    ++i;
   }
+
+  cout << endl;
 }
 
 void solver_efficace(vector<bool*> &solutions, const int cabanes, const int pigeons) {
@@ -131,7 +141,7 @@ int main(int argc, char* argv[]) {
     solver_efficace(solutions, cabanes, pigeons);
   }
 
-  print_solutions(solutions, cabanes, pigeons);
+  // print_solutions(solutions, cabanes, pigeons);
 
   for (auto sol : solutions) delete[] sol;
 
