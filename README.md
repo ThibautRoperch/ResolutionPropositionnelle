@@ -1,5 +1,6 @@
 # ResolutionPropositionnelle
-Résolution de propblèmes en calcul propositionnel
+
+Résolution de problèmes en calcul propositionnel
 
 Application au problème des pigeons et des pigeonniers
 
@@ -28,9 +29,17 @@ Avec 1 le nombre de pigeons et 2 le nombre de pigeonniers (cabanes)
     une ligne de matrice = un pigeon
     une colonne de matrice = un pigeonnier
 
-| p et c | Nombre de sol |
-|-------|--------------|
-| 2p 2c | 2 solutions  |
-| 3p 3c | 6 solutions  |
-| 4p 4c | 24 solutions |
-| 6p 6c |              |
+| p et c | Nombre de sol | Temps d'exec |
+|--------|---------------|--------------|
+| 2p 2c  | 2 solutions   |              |
+| 3p 3c  | 6 solutions   |              |
+| 4p 4c  | 24 solutions  |              |
+| 6p 6c  |               |              |
+
+## Limites d'implémentation
+
+### Algo brut
+
+cabanes * pigeons <= 9999999 (initialisation de la taille de std::bitset, nombre de cases dans la matrice pigeons/pigeonniers)
+pow(2, cabanes*pigeons) - 1 <= 18 446 744 073 709 551 615 (unsigned long long, nombre de matrices possibles)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            

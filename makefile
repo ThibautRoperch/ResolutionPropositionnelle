@@ -15,10 +15,10 @@ $(BIN_DIR)/main.exe: $(SRC_DIR)/main.cpp
 	g++ -o $@ $^ $(CFLAGS) $(OFLAGS)
 
 launch:
-	./$(BIN_DIR)/main.exe
+	$(BIN_DIR)/main.exe
 
 time:
-	time ./$(BIN_DIR)/main.exe
+	time $(BIN_DIR)/main.exe
 
 clean:
 	rm -f $(BIN_DIR)/*

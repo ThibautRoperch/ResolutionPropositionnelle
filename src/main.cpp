@@ -9,34 +9,37 @@
 using namespace std;
 
 void print_solutions(const vector<bool*> &solutions, const int cabanes, const int pigeons) {
-  // for (auto sol : solutions) {
-  //   for (int i = 0; i < pigeons; ++i) {
-  //     for (int j = 0; j < cabanes; ++j) {
-  //         cout << sol[i*cabanes + j] << " ";
-  //     }
-  //     cout << endl;
-  //   }
-  //   cout << endl;
-  // }
+  for (auto sol : solutions) {
+    for (int i = 0; i < pigeons; ++i) {
+      for (int j = 0; j < cabanes; ++j) {
+          cout << sol[i*cabanes + j] << " ";
+      }
+      cout << endl;
+    }
+    cout << endl;
+  }
   cout << solutions.size() << " solutions\n" << endl;
 }
 
 void solver_brut(vector<bool*> &solutions, const int cabanes, const int pigeons) {
-  int nb_possibilites = pow(2, cabanes*pigeons) - 1;
-  int nb_cases = cabanes*pigeons;
-  const int const_bitset_size = 9999999;
+  unsigned long long nb_possibilites = pow(2, cabanes*pigeons) - 1;
+  int nb_cases = cabanes * pigeons;
+  const int const_bitset_size = 9999999; // en remplacement de nb_cases pour l'initialisation du bitset
 
   // Génération de toutes les matrices possibles
+  vector<bool*> possibilites;
+  bool *possibilite_bool;
   for (int i = 0; i <= nb_possibilites; ++i) {
     bitset<const_bitset_size> possibilite_bit = bitset<const_bitset_size>(i);
-    bool *possibilite_bool = new bool[nb_cases];
+    possibilite_bool = new bool[nb_cases];
     for (int j = 0; j < nb_cases; ++j) possibilite_bool[j] = (possibilite_bit[j] == 1) ? true : false;
-    solutions.push_back(possibilite_bool);
+    possibilites.push_back(possibilite_bool);
   }
 
   // Nettoyage pour ne garder que les solutions (application des contraints)
-  vector<bool*> res;
-  for (auto sol : solutions) {
+  while (possibilites.size() > 0) {
+    bool* sol = possibilites.back();
+    possibilites.pop_back();
     bool continuer_analyse = true;
     // Contrainte 1 : un pigeon est dans un et un seul pigeonnier
     for (int i = 0; i < pigeons; ++i) {
@@ -60,15 +63,15 @@ void solver_brut(vector<bool*> &solutions, const int cabanes, const int pigeons)
         }
       }
     }
-    // Supprimer la solution si c'en n'est pas une
+    // Conserver la solution si c'en est une
     if (continuer_analyse) {
-      res.push_back(sol);
+      solutions.push_back(sol);
+    }
+    // Rendre la mémoire sinon
+    else {
+      delete[] sol;
     }
   }
-
-  // Écraser solutions avec res
-  // vider solution
-  solutions = res;
 }
 
 void solver_efficace(vector<bool*> &solutions, const int cabanes, const int pigeons) {
@@ -129,6 +132,8 @@ int main(int argc, char* argv[]) {
   }
 
   print_solutions(solutions, cabanes, pigeons);
+
+  for (auto sol : solutions) delete[] sol;
 
   return EXIT_SUCCESS;
 }
