@@ -84,8 +84,16 @@ void solver_brut(vector<bool*> &solutions, const int cabanes, const int pigeons)
   cout << endl;
 }
 
+void solver_brut_pragma(vector<bool*> &solutions, const int cabanes, const int pigeons) {
+  
+}
+
 void solver_efficace(vector<bool*> &solutions, const int cabanes, const int pigeons) {
 
+}
+
+void solver_recursif() {
+  
 }
 
 void print_help() {
