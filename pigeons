@@ -1,0 +1,25 @@
+
+% clingo pigeons 0
+
+nb_pigeons(3). % hauteur
+nb_cabanes(3). % largeur
+pigeon(1..X) :- nb_pigeons(X).
+cabane(1..X) :- nb_cabanes(X).
+
+case(X, Y) :- pigeon(X), cabane(Y), nb_pigeons(M), nb_cabanes(N), X >= 1, X <= N, Y >= 1, Y <= M.
+
+candidat(X, Y) :- case(X, Y).
+
+sol(X, Y) :- candidat(X, Y), not nsol(X, Y).
+nsol(X, Y) :- candidat(X, Y), not sol(X, Y).
+
+% description de ce qui ne doit pas exister :
+:- sol(X, Y), sol(X, A), Y != A. % solutions sur des colonnes différentes
+:- sol(X, Y), sol(B, Y), X != B. % solutions sur des lignes différentes
+
+% définir ok pour décrire ce qu'on ne veut pas obtenir (on veut une reine par ligne)
+ok(X) :- sol(X, Y).
+:- n(X), not ok(X).
+
+#show sol/2.
+
