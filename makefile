@@ -1,4 +1,4 @@
-CFLAGS=-Wall -std=c++11
+CFLAGS=-Wall -std=c++11 -lpthread -fopenmp
 OFLAGS=-O3
 
 SRC_DIR = ./src
