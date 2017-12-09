@@ -10,7 +10,8 @@ Application au problème des pigeons et des pigeonniers
 
 ## Exécuter
 
-    ./bin/main.exe -p 1 -c 2
+    _./bin/main.exe -p 1 -c 2_
+    mpirun -n 4 ./bin/mpi.exe
 
 Avec 1 le nombre de pigeons et 2 le nombre de pigeonniers (cabanes)
 
@@ -20,6 +21,9 @@ Avec 1 le nombre de pigeons et 2 le nombre de pigeonniers (cabanes)
 * Parallelsieleilser le solver bourrin
 
 * Refaire les fichiers au propre (faire une classe de solver, nommer les fichiers comme demandé dans le sujet)
+
+* Faire le script (voir dernière partie de l'énoncé)
+* Exporter les résultats vers un graphe, comme au premier TP, pour être le meilleur groupe
 
 ## Résultats
 

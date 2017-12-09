@@ -12,7 +12,7 @@ initialiser:
 compiler_sources: $(BIN_DIR)/main.exe
 
 $(BIN_DIR)/main.exe: $(SRC_DIR)/main.cpp
-	g++ -o $@ $^ $(CFLAGS) $(OFLAGS)
+	mpic++ -o $@ $^ $(CFLAGS) $(OFLAGS)
 
 launch:
 	$(BIN_DIR)/main.exe
