@@ -5,6 +5,7 @@
 #include <vector>
 #include <bitset>
 #include <cmath>
+#include <omp.h>
 
 #include <mpi.h>
 
@@ -23,13 +24,35 @@ void print_solutions(const vector<bool*> &solutions, const int cabanes, const in
   cout << solutions.size() << " solutions\n" << endl;
 }
 
+bool test_solution_final(bool* solution, const int cabanes, const int pigeons) {
+  // Contrainte 1 : un pigeon est dans un et un seul pigeonnier
+  for (int i = 0; i < pigeons; ++i) {
+    int nb_cabanes = 0;
+    for (int j = 0; j < cabanes; ++j)
+      nb_cabanes += (solution[i*cabanes + j]) ? 1 : 0;
+    if (nb_cabanes != 1) {
+      return false;
+    }
+  }
+  // Contrainte 2 : un pigeonnier accueille au plus un pigeon
+  for (int i = 0; i < cabanes; ++i) {
+    int nb_pigeons = 0;
+    for (int j = 0; j < pigeons; ++j)
+      nb_pigeons += (solution[i + j*cabanes]) ? 1 : 0;
+    if (nb_pigeons > 1) {
+      return false;
+    }
+  }
+  return true;
+}
+
 /**
  * Calcul de toutes les matrices possibles, puis nettoyage pour ne garder que les solutions
  */
 void solver_brut(vector<bool*> &solutions, const int cabanes, const int pigeons) {
   unsigned long long nb_possibilites = pow(2, cabanes*pigeons) - 1;
   int nb_cases = cabanes * pigeons;
-  const int const_bitset_size = 9999999; // en remplacement de nb_cases pour l'initialisation du bitset
+  const int const_bitset_size = 64; // en remplacement de nb_cases pour l'initialisation du bitset
 
   // Génération de toutes les matrices possibles
   cout << "Génération des " << nb_possibilites << " matrices" << endl;
@@ -51,31 +74,8 @@ void solver_brut(vector<bool*> &solutions, const int cabanes, const int pigeons)
   while (possibilites.size() > 0) {
     bool* sol = possibilites.back();
     possibilites.pop_back();
-    bool continuer_analyse = true;
-    // Contrainte 1 : un pigeon est dans un et un seul pigeonnier
-    for (int i = 0; i < pigeons; ++i) {
-      int nb_cabanes = 0;
-      for (int j = 0; j < cabanes; ++j)
-        nb_cabanes += (sol[i*cabanes + j]) ? 1 : 0;
-      if (nb_cabanes != 1) {
-        continuer_analyse = false;
-        break;
-      }
-    }
-    // Contrainte 2 : un pigeonnier accueille au plus un pigeon
-    if (continuer_analyse) {
-      for (int i = 0; i < cabanes; ++i) {
-        int nb_pigeons = 0;
-        for (int j = 0; j < pigeons; ++j)
-          nb_pigeons += (sol[i + j*cabanes]) ? 1 : 0;
-        if (nb_pigeons > 1) {
-          continuer_analyse = false;
-          break;
-        }
-      }
-    }
-    // Conserver la solution si c'en est une
-    if (continuer_analyse) {
+    // Vérification des contraintes,conserver la solution si c'en est une
+    if (test_solution_final(sol,cabanes,pigeons)) {
       solutions.push_back(sol);
     }
     // Rendre la mémoire sinon
@@ -85,7 +85,46 @@ void solver_brut(vector<bool*> &solutions, const int cabanes, const int pigeons)
     if (i % 100 == 0 || possibilites.size() == 0) cout << "\r  " << i*100/nb_possibilites << " %";
     ++i;
   }
+  cout << endl;
+}
 
+void solver_brut_pragma(vector<bool*> &solutions, const int cabanes, const int pigeons) {
+  unsigned long long nb_possibilites = pow(2, cabanes*pigeons) - 1;
+  int nb_cases = cabanes * pigeons;
+  const int const_bitset_size = 9999999; // en remplacement de nb_cases pour l'initialisation du bitset
+
+  // Génération de toutes les matrices possibles
+  cout << "Génération des " << nb_possibilites << " matrices" << endl;
+  vector<bool*> possibilites;
+
+  bool *possibilite_bool;
+  #pragma omp for
+  for (unsigned int i = 0; i <= nb_possibilites; ++i) {
+    bitset<const_bitset_size> possibilite_bit = bitset<const_bitset_size>(i);
+    possibilite_bool = new bool[nb_cases];
+    for (int j = 0; j < nb_cases; ++j) possibilite_bool[j] = (possibilite_bit[j] == 1) ? true : false;
+    possibilites.push_back(possibilite_bool);
+    if (i % 100 == 0 || i == nb_possibilites) cout << "\r  " << i*100/nb_possibilites << " %";
+  }
+  cout << endl;
+
+  // Nettoyage pour ne garder que les solutions (application des contraints)
+  cout << "Application des contraintes sur les matrices pour ne garder que les solutions" << endl;
+  unsigned int i = 0;
+  while (possibilites.size() > 0) {
+    bool* sol = possibilites.back();
+    possibilites.pop_back();
+    // Vérification des contraintes,conserver la solution si c'en est une
+    if (test_solution_final(sol,cabanes,pigeons)) {
+      solutions.push_back(sol);
+    }
+    // Rendre la mémoire sinon
+    else {
+      delete[] sol;
+    }
+    if (i % 100 == 0 || possibilites.size() == 0) cout << "\r  " << i*100/nb_possibilites << " %";
+    ++i;
+  }
   cout << endl;
 }
 
@@ -238,17 +277,91 @@ void solver_brut_mpi(vector<bool*> &solutions, const int cabanes, const int pige
   MPI::Finalize();
 }
 
-void solver_brut_pragma(vector<bool*> &solutions, const int cabanes, const int pigeons) {
-  
+/*bool* initSolutionVide(const int col, const int row) {  
+  bool firstMatriceVide = new bool[col*row];
+  for (int i=0; i<(col*row); ++i) {
+    firstMatriceVide[i] = 0;
+  }
+  return firstMatriceVide;
+}
+
+bool test_solution_max(bool * solution, const int cabanes, const int pigeons) {
+  // Contrainte 1 : un pigeon est dans un et un seul pigeonnier
+  for (int i = 0; i < pigeons; ++i) {
+    int nb_cabanes = 0;
+    for (int j = 0; j < cabanes; ++j)
+      nb_cabanes += (solution[i*cabanes + j]);
+    if (nb_cabanes > 1) {
+      return false;
+    }
+  }
+  // Contrainte 2 : un pigeonnier accueille au plus un pigeon
+  for (int i = 0; i < cabanes; ++i) {
+    int nb_pigeons = 0;
+    for (int j = 0; j < pigeons; ++j)
+      nb_pigeons += (solution[i + j*cabanes]);
+    if (nb_pigeons > 1) {
+      return false;
+    }
+  }
+  return true;
+}
+
+vector<bool*> solver_intelligent(vector<bool*> solutionsPrecedentes, int indexPigeon, const int cabanes, const int pigeons) {
+  int indexStart = indexPigeon*cabanes;
+  int size = cabanes*pigeon;
+
+  vector<bool*> solutionsfinal;
+  vector<bool*> solutionTmp;
+  vector<bool*> solutions;
+  for (auto solution : solutionsPrecedentes) {
+    solutionTmp.clear();
+    bool maSolutionTmp = new bool[size];
+    std::copy(std::begin(solution), std::end(solution), std::begin(maSolutionTmp));
+    solutionTmp.push_back(maSolutionTmp);
+    for (int i=indexStart; i<(indexStart*cabanes); ++i) {
+      solutions.clear();
+      for (auto tmp : solutionTmp) {
+        bool sol1 = new bool[size];
+        std::copy(std::begin(tmp), std::end(tmp), std::begin(sol1));
+        sol1[i] = 1;
+        if (test_solution_max(sol1,cabanes,pigeons)) {
+          solutions.push_back(sol1);
+        }
+        bool sol2 = new bool[size];
+        std::copy(std::begin(tmp), std::end(tmp), std::begin(sol2));
+        sol2[i] = 0;
+        if (test_solution_max(sol2,cabanes,pigeons)) {
+          solutions.push_back(sol2);
+        }
+      } 
+      solutionTmp.clear();
+      solutionTmp = solutions;      
+    }
+    solutionsfinal.insert(solutionsfinal.end(),solutionTmp.begin(),solutionTmp.end());
+  }
+
+  solutions.clear();
+  solutionTmp.clear();
+  return solutionsfinal;
 }
 
 void solver_efficace(vector<bool*> &solutions, const int cabanes, const int pigeons) {
+  int index = 0;
+  vector<bool*> solutionPartiel;
+  bool* firstMatriceVide = initSolutionVide(cabanes,pigeons);
+  print_solutions(firstMatriceVide,cabanes,pigeons);
+  solutionPartiel.push_back(firstMatriceVide);
+  while (index < pigeons) {
+    solutionPartiel = solver_intelligent(solutionPartiel, index, cabanes, pigeons);
+    index++;
+  }
 
-}
+  // Test les solutions de nouveaux suivant les contraintes
+  //
 
-void solver_recursif() {
-  
-}
+  solutions = solutionPartiel;  
+}*/
 
 void print_help() {
     cout << "usage: exe -o 10 -c 12\n"
@@ -296,17 +409,21 @@ int main(int argc, char* argv[]) {
     case 1: // Méthode brute
       solver_brut(solutions, cabanes, pigeons);    
       break;
-    case 2: // Méthode brute parallélisée avec MPI
+    case 2: // Méthode brute parallélisée avec pragma
+      solver_brut_pragma(solutions, cabanes, pigeons);
+      break;
+    case 3: // Méthode brute parallélisée avec MPI
       solver_brut_mpi(solutions, cabanes, pigeons);
       break;
-    case 3: // Méthode efficace
-      solver_efficace(solutions, cabanes, pigeons);
+    case 4: // Méthode efficace
+      // solver_efficace(solutions, cabanes, pigeons);
       break;
     default:
       break;
   }
 
-  print_solutions(solutions, cabanes, pigeons);
+  std::cout << "Nombre de solutions : " << solutions.size() << std::endl;
+  // print_solutions(solutions, cabanes, pigeons);
 
   // Rendre la mémoire des solutions
   for (auto sol : solutions) delete[] sol;

@@ -18,7 +18,7 @@ Avec 1 le nombre de pigeons et 2 le nombre de pigeonniers (cabanes)
 ## TODO
 
 * Faire le solver intuitivement efficace (solveur_efficace)
-* Parallelsieleilser le solver bourrin
+* Paralléliser le solver bourrin avec OpenMP et MPI
 
 * Refaire les fichiers au propre (faire une classe de solver, nommer les fichiers comme demandé dans le sujet)
 
@@ -30,15 +30,18 @@ Avec 1 le nombre de pigeons et 2 le nombre de pigeonniers (cabanes)
     p = pigeon
     c = pigeonnier
 
+    m1 = méthode brute
+    m2 = méthode efficace (récursive)
+
     une ligne de matrice = un pigeon
     une colonne de matrice = un pigeonnier
 
-| p et c | Nombre de sol | Temps d'exec |
-|--------|---------------|--------------|
-| 2p 2c  | 2 solutions   |              |
-| 3p 3c  | 6 solutions   |              |
-| 4p 4c  | 24 solutions  |              |
-| 6p 6c  |               |              |
+| p et c | Nombre de sol | Temps d'exec m1 | Temps d'exec m2 | Temps d'exec m1 openMP | Temps d'exec m1 MPI |
+|--------|---------------|-----------------|-----------------|------------------------|---------------------|
+| 2p 2c  | 2 solutions   |                 |                 |                        |                     |
+| 3p 3c  | 6 solutions   |                 |                 |                        |                     |
+| 4p 4c  | 24 solutions  |                 |                 |                        |                     |
+| 6p 6c  |               |                 |                 |                        |                     |
 
 ## Limites d'implémentation
 
