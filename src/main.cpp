@@ -58,10 +58,9 @@ void solver_brut(vector<bool*> &solutions, const int cabanes, const int pigeons)
   cout << "Génération des " << nb_possibilites << " matrices" << endl;
   vector<bool*> possibilites;
 
-  bool *possibilite_bool;
   for (unsigned long long i = 0; i <= nb_possibilites; ++i) {
     bitset<const_bitset_size> possibilite_bit = bitset<const_bitset_size>(i);
-    possibilite_bool = new bool[nb_cases];
+    bool *possibilite_bool = new bool[nb_cases];
     for (int j = 0; j < nb_cases; ++j) possibilite_bool[j] = (possibilite_bit[j] == 1) ? true : false;
     possibilites.push_back(possibilite_bool);
     if (i % 100 == 0 || i == nb_possibilites) cout << "\r  " << i*100/nb_possibilites << " %";
@@ -97,11 +96,10 @@ void solver_brut_pragma(vector<bool*> &solutions, const int cabanes, const int p
   cout << "Génération des " << nb_possibilites << " matrices" << endl;
   vector<bool*> possibilites;
 
-  bool *possibilite_bool;
   #pragma omp for
-  for (unsigned int i = 0; i <= nb_possibilites; ++i) {
+  for (unsigned long long i = 0; i <= nb_possibilites; ++i) {
     bitset<const_bitset_size> possibilite_bit = bitset<const_bitset_size>(i);
-    possibilite_bool = new bool[nb_cases];
+    bool *possibilite_bool = new bool[nb_cases];
     for (int j = 0; j < nb_cases; ++j) possibilite_bool[j] = (possibilite_bit[j] == 1) ? true : false;
     possibilites.push_back(possibilite_bool);
     if (i % 100 == 0 || i == nb_possibilites) cout << "\r  " << i*100/nb_possibilites << " %";
@@ -135,25 +133,22 @@ void local_solver_brut(vector<bool*> &solutions, const int cabanes, const int pi
   // Génération de toutes les matrices possibles
   vector<bool*> possibilites;
 
-  bool *possibilite_bool;
   for (unsigned long long i = debut; i <= fin; ++i) {
     bitset<const_bitset_size> possibilite_bit = bitset<const_bitset_size>(i);
-    possibilite_bool = new bool[nb_cases];
+    bool *possibilite_bool = new bool[nb_cases];
     for (int j = 0; j < nb_cases; ++j) possibilite_bool[j] = (possibilite_bit[j] == 1) ? true : false;
     possibilites.push_back(possibilite_bool);
   }
   
   // Nettoyage pour ne garder que les solutions (application des contraintes)
-  unsigned int i = 0;
-  while (possibilites.size() > 0) {
-    bool* sol = possibilites.back();
-    possibilites.pop_back();
+  for (unsigned long long p = 0; p < possibilites.size(); ++p) {
+    bool* poss = possibilites[p];
     bool continuer_analyse = true;
     // Contrainte 1 : un pigeon est dans un et un seul pigeonnier
     for (int i = 0; i < pigeons; ++i) {
       int nb_cabanes = 0;
       for (int j = 0; j < cabanes; ++j)
-        nb_cabanes += (sol[i*cabanes + j]) ? 1 : 0;
+        nb_cabanes += (poss[i*cabanes + j]) ? 1 : 0;
       if (nb_cabanes != 1) {
         continuer_analyse = false;
         break;
@@ -164,7 +159,7 @@ void local_solver_brut(vector<bool*> &solutions, const int cabanes, const int pi
       for (int i = 0; i < cabanes; ++i) {
         int nb_pigeons = 0;
         for (int j = 0; j < pigeons; ++j)
-          nb_pigeons += (sol[i + j*cabanes]) ? 1 : 0;
+          nb_pigeons += (poss[i + j*cabanes]) ? 1 : 0;
         if (nb_pigeons > 1) {
           continuer_analyse = false;
           break;
@@ -173,21 +168,21 @@ void local_solver_brut(vector<bool*> &solutions, const int cabanes, const int pi
     }
     // Conserver la solution si c'en est une
     if (continuer_analyse) {
-      solutions.push_back(sol);
+      solutions.push_back(poss);
     }
     // Rendre la mémoire sinon
     else {
-      delete[] sol;
+      delete[] poss;
     }
-    ++i;
   }
 }
 
 void solver_brut_mpi(vector<bool*> &solutions, const int cabanes, const int pigeons) {
-  // Le processus maître partage le nombres de matrices à générer pour x processus
+  // Le processus maître compte le nombres de matrices à générer pour chaque processus
   // Chaque processus génère ses matrices -> possibilités
   // Chaque processus filtre ses matrices avec les contraintes -> solutions
   // Les matrices restantes sont rassemblées par le processus maître
+  // Données communes : cabanes, pigeons
 
   MPI::Init();
 
@@ -221,12 +216,17 @@ void solver_brut_mpi(vector<bool*> &solutions, const int cabanes, const int pige
       indice_fin_precedent = indice_fin_precedent + tailles_locales[i];
       indices_locaux[i*2+1] = indice_fin_precedent;
     }
+    indices_locaux[(nb_processus-1)*2+1]++;
 
     // Envoi des indices à chaque processus esclave
     for (int i = 1; i < nb_processus; ++i) {
       MPI::COMM_WORLD.Send(&indices_locaux[i*2], 1, MPI_INT, i, 0);
       MPI::COMM_WORLD.Send(&indices_locaux[i*2+1], 1, MPI_INT, i, 0);
     }
+
+    // Calcul des sous-solutions du processus maître
+    local_solver_brut(solutions, cabanes, pigeons, indices_locaux[0], indices_locaux[1]);
+    // cout << solutions.size() << " solution(s) calculées par le master" << endl;
 
     // Récupération des solutions de chaque processus esclave, chaque esclave envoyant ses solutions une par une
     for (int i = 1; i < nb_processus; ++i) {
@@ -242,12 +242,9 @@ void solver_brut_mpi(vector<bool*> &solutions, const int cabanes, const int pige
         MPI::COMM_WORLD.Recv(&sol[0], pigeons*cabanes, MPI_INT, i, MPI::ANY_TAG, etat);
         solutions.push_back(sol);
       }
-      
+
       // cout << nb_solutions << " solution(s) récupérée(s) du slave " << i << " par le master" << endl;
     }
-
-    // Calcul des sous-solutions du processus maître
-    local_solver_brut(solutions, cabanes, pigeons, indices_locaux[0], indices_locaux[1]);
   } else {
     // SLAVE
 
@@ -264,11 +261,11 @@ void solver_brut_mpi(vector<bool*> &solutions, const int cabanes, const int pige
 
     // Envoi du nombre de solutions au processus maître
     int nb_solutions = sous_solutions.size();
-    MPI::COMM_WORLD.Send(&nb_solutions, 1, MPI_INT, 0, nb_processus);
+    MPI::COMM_WORLD.Send(&nb_solutions, 1, MPI_INT, 0, id_processus);
 
     // Envoi des solutions au processus maître
-    for (auto sol : sous_solutions) {
-      MPI::COMM_WORLD.Send(&sol[0], pigeons*cabanes, MPI_INT, 0, nb_processus);
+    for (int i = 0; i < sous_solutions.size(); ++i) {
+      MPI::COMM_WORLD.Send(&sous_solutions[i][0], pigeons*cabanes, MPI_INT, 0, id_processus);
     }
 
     // cout << nb_solutions << " solution(s) envoyée(s) du slave " << id_processus << " au master" << endl;
@@ -409,14 +406,14 @@ int main(int argc, char* argv[]) {
     case 1: // Méthode brute
       solver_brut(solutions, cabanes, pigeons);    
       break;
-    case 2: // Méthode brute parallélisée avec pragma
+    case 2: // Méthode efficace
+      // solver_efficace(solutions, cabanes, pigeons);
+      break;
+    case 3: // Méthode brute parallélisée avec pragma
       solver_brut_pragma(solutions, cabanes, pigeons);
       break;
-    case 3: // Méthode brute parallélisée avec MPI
+    case 4: // Méthode brute parallélisée avec MPI
       solver_brut_mpi(solutions, cabanes, pigeons);
-      break;
-    case 4: // Méthode efficace
-      // solver_efficace(solutions, cabanes, pigeons);
       break;
     default:
       break;

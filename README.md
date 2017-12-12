@@ -10,10 +10,17 @@ Application au problème des pigeons et des pigeonniers
 
 ## Exécuter
 
-    _./bin/main.exe -p 1 -c 2_
-    mpirun -n 4 ./bin/mpi.exe
+Pour les méthodes non-MPI :
 
-Avec 1 le nombre de pigeons et 2 le nombre de pigeonniers (cabanes)
+    ./bin/main.exe -p 1 -c 2 -m 1
+
+Pour la méthode MPI :
+
+    mpirun -n 4 ./bin/main.exe -p 1 -c 2 -m 4
+
+-p : nombre de pigeon (1)
+-c : nombre de pigeonniers, ou cabanes (2)
+-m : méthode de calcul
 
 ## TODO
 
@@ -36,12 +43,12 @@ Avec 1 le nombre de pigeons et 2 le nombre de pigeonniers (cabanes)
     une ligne de matrice = un pigeon
     une colonne de matrice = un pigeonnier
 
-| p et c | Nombre de sol | Temps d'exec m1 | Temps d'exec m2 | Temps d'exec m1 openMP | Temps d'exec m1 MPI |
-|--------|---------------|-----------------|-----------------|------------------------|---------------------|
-| 2p 2c  | 2 solutions   |                 |                 |                        |                     |
-| 3p 3c  | 6 solutions   |                 |                 |                        |                     |
-| 4p 4c  | 24 solutions  |                 |                 |                        |                     |
-| 6p 6c  |               |                 |                 |                        |                     |
+| p et c | Nombre de sol | Temps d'exec m1 (brut) | Temps d'exec m2 (efficace) | Temps d'exec m3 (brut avec openMP) | Temps d'exec m4 (brut avec MPI) |
+|--------|---------------|------------------------|----------------------------|------------------------------------|---------------------------------|
+| 2p 2c  | 2 solutions   |                        |                            |                                    | 0m0.101s                        |
+| 3p 3c  | 6 solutions   |                        |                            |                                    | 0m0.119s                        |
+| 4p 4c  | 24 solutions  |                        |                            |                                    |                                 |
+| 6p 6c  |               |                        |                            |                                    |                                 |
 
 ## Limites d'implémentation
 
