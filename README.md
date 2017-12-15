@@ -1,8 +1,11 @@
 # ResolutionPropositionnelle
 
-Résolution de problèmes en calcul propositionnel
+Résolution de problèmes en calcul propositionnel, application au problème des pigeons et des pigeonniers
 
-Application au problème des pigeons et des pigeonniers
+Alice Bazanté
+Pierre Granier--Richard
+Pierre-Olivier Mainfroid
+Thibaut Roperch
 
 ## Compiler
 
@@ -10,27 +13,25 @@ Application au problème des pigeons et des pigeonniers
 
 ## Exécuter
 
-Pour les méthodes non-MPI :
-
-    ./bin/main.exe -p 1 -c 2 -m 1
-
-Pour la méthode MPI :
-
-    mpirun -n 4 ./bin/main.exe -p 1 -c 2 -m 4
-
 -p : nombre de pigeon (1)
 -c : nombre de pigeonniers, ou cabanes (2)
 -m : méthode de calcul
+-h : aide
 
-## TODO
+Pour les méthodes non-MPI (méthodes 1 à 3) :
 
-* Faire le solver intuitivement efficace (solveur_efficace)
-* Paralléliser le solver bourrin avec OpenMP et MPI
+    ./bin/main.exe -p 1 -c 2 -m 1
 
-* Refaire les fichiers au propre (faire une classe de solver, nommer les fichiers comme demandé dans le sujet)
+Pour la méthode MPI (méthode 4) :
 
-* Faire le script (voir dernière partie de l'énoncé)
-* Exporter les résultats vers un graphe, comme au premier TP, pour être le meilleur groupe
+    mpirun -n 4 ./bin/main.exe -p 1 -c 2 -m 4
+
+## Travail effectué
+
+Nous avons implémenté plusieurs algos...
+
+Choix de la structure : étant donné qu'on connait à l'avance le nombre de solutions, les array sont plus optis que les vecteur (comparaison_structures.cpp)
+Une solution est un int plutot que un tableau de bool
 
 ## Résultats
 
@@ -57,3 +58,25 @@ Pour la méthode MPI :
 cabanes * pigeons <= 9999999 (initialisation de la taille de std::bitset, nombre de cases dans la matrice pigeons/pigeonniers)
 pow(2, cabanes*pigeons) < 18 446 744 073 709 551 615 (unsigned long long, nombre de matrices possibles)
 pow(2, cabanes*pigeons) < myvector.max_size() (nombre de matrices possibles)
+
+
+## TODO
+
+* Faire le solver intuitivement efficace (solveur_efficace)
+* Paralléliser le solver bourrin avec OpenMP et MPI
+
+* Refaire les fichiers au propre (faire une classe de solver, nommer les fichiers comme demandé dans le sujet)
+
+* Faire le script (voir dernière partie de l'énoncé)
+* Exporter les résultats vers un graphe, comme au premier TP, pour être le meilleur groupe
+
+Remplacer unsigned long long par ulong
+
+stockage :
+ne pas stocker toutes les possibilités
+stocker les entiers correspondant auxsolutions, plutot que les matrices de binaires
+changer la méthode de print d'une solution en conséquence
+
+structures :
+une solution est un entier
+tableau de dimensions à la place de cabanes * pigeons

@@ -5,6 +5,11 @@
         "initializer_list": "cpp",
         "array": "cpp",
         "utility": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "numeric": "cpp",
+        "typeinfo": "cpp",
+        "vector": "cpp",
+        "limits": "cpp",
+        "iosfwd": "cpp"
     }
 }
