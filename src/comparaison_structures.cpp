@@ -6,6 +6,12 @@
 
 using namespace std;
 
+
+/**
+ * Comparaison du temps de transformation d'un nombre décimal vers sa représentation en binaire
+ * vector contre array, conversion entier décimal/binaire avec un bitset ou "à la main"
+ */
+
 /*
 g++ -std=c++11 src/comparaison_structures.cpp -o bin/comparaison_structures.out
 
@@ -19,6 +25,10 @@ time ./bin/comparaison_structures.out 3
 28.072s
 time ./bin/comparaison_structures.out 4
 30.525s
+
+Conclusions :
+- conversion décimale vers binaire "à la main" plus rapide
+- préférer l'array au vector
 */
 
 void simple_vector(int taille, long nombre, vector<bool> &res) {

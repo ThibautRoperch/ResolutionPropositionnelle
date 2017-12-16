@@ -9,7 +9,10 @@ all: initialiser compiler_sources
 initialiser:
 	mkdir -p $(BIN_DIR)
 
-compiler_sources: $(BIN_DIR)/main.exe
+compiler_sources: $(BIN_DIR)/main.exe $(BIN_DIR)/main_old.exe 
+
+$(BIN_DIR)/main_old.exe: $(SRC_DIR)/main_old.cpp
+	mpic++ -o $@ $^ $(CFLAGS) $(OFLAGS)
 
 $(BIN_DIR)/main.exe: $(SRC_DIR)/main.cpp
 	mpic++ -o $@ $^ $(CFLAGS) $(OFLAGS)

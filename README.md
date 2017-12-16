@@ -19,6 +19,7 @@ Avec :
 * -m l'identifiant de la méthode de calcul (1)
 
 Pour les méthodes non-MPI (méthodes 1 à 3) :
+
     ./bin/main.exe -p 1 -c 2 -m 1
 
 Pour la méthode MPI (méthode 4) :
@@ -31,6 +32,11 @@ Nous avons implémenté plusieurs algos...
 
 Choix de la structure : étant donné qu'on connait à l'avance le nombre de solutions, les array sont plus optis que les vecteur (comparaison_structures.cpp)
 Une solution est un int plutot que un tableau de bool
+On travail avec des ulong, car le nombre de possibilités pour un probleme est exponentiel (68719476736 solutions pour 6 pigeons et 6 pigeonniers (2^6*6))
+
+version asp avec les contraintes des pigeons pour vérifier les résultats
+
+pour set les constraints, go dans headers/constraints.h
 
 ## Résultats
 
@@ -59,7 +65,6 @@ cabanes * pigeons <= 9999999 (initialisation de la taille de std::bitset, nombre
 pow(2, cabanes*pigeons) < 18 446 744 073 709 551 615 (unsigned long long, nombre de matrices possibles)
 pow(2, cabanes*pigeons) < myvector.max_size() (nombre de matrices possibles)
 
-
 ## TODO
 
 * Faire le solver intuitivement efficace (solveur_efficace)
@@ -80,3 +85,5 @@ changer la méthode de print d'une solution en conséquence
 structures :
 une solution est un entier
 tableau de dimensions à la place de cabanes * pigeons
+
+un argument pour afficher les solutions
