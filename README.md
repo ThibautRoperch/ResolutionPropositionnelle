@@ -48,18 +48,12 @@ Pour la méthode MPI :
     une ligne de matrice = un pigeon
     une colonne de matrice = un pigeonnier
 
-| p et c | Nombre de sol | Temps d'exec m1 | Temps d'exec m2 | Temps d'exec m1 openMP | Temps d'exec m1 MPI | 
-|--------|---------------|-----------------|-----------------|------------------------|---------------------| 
-| 2p 2c  | 2 solutions   |       0.004s    |                 |                        |                     | 
-| 3p 3c  | 6 solutions   |       0.004s    |                 |                        |                     | 
-| 4p 4c  | 24 solutions  |       0.021s    |                 |        1.644s          |                     | 
-| 5p 5c  | 120 solutions |       2.680s    |                 |        8.468s          |                     | 
-| 6p 6c  |     solutions |                 |                 |                        |                     | 
 | p et c | Nombre de sol | Temps d'exec m1 (brut) | Temps d'exec m2 (efficace) | Temps d'exec m3 (brut avec openMP) | Temps d'exec m4 (brut avec MPI) |
 |--------|---------------|------------------------|----------------------------|------------------------------------|---------------------------------|
-| 2p 2c  | 2 solutions   |                        |                            |                                    | 0m0.101s                        |
-| 3p 3c  | 6 solutions   |                        |                            |                                    | 0m0.119s                        |
-| 4p 4c  | 24 solutions  |                        |                            |                                    |                                 |
+| 2p 2c  | 2 solutions   |        0.004s          |                            |                                    | 0m0.101s                        |
+| 3p 3c  | 6 solutions   |        0.004s          |                            |                                    | 0m0.119s                        |
+| 4p 4c  | 24 solutions  |        0.021s          |                            |         1.644s                     |                                 |
+| 5p 5c  | 120 solutions |        2.680s          |                            |         8.468s                     |                                 |
 | 6p 6c  |               |                        |                            |                                    |                                 |
 
 
