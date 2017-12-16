@@ -15,7 +15,7 @@ using namespace std;
  * Affiche sur la sortie standard les solutions d'un vecteur de solutions en fonction de la taille des dimensions données
  * Une solution est affichée sur plusieurs lignes (format matriciel) lorsque le problème est à deux dimensions (comme pigeons/cabanes)
  */
-void print_solutions(const vector<ulong> &solutions, const vector<unsigned int> &dimensions) {
+void print_solutions(const vector<ull> &solutions, const vector<unsigned int> &dimensions) {
 	unsigned int solutions_length = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
 
 	for (auto sol : solutions) {
@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
 	unsigned int methode = 1, pigeons = 2, cabanes = 2;
 	vector<unsigned int> dimensions;
 	bool display_solutions = false;
-	vector<ulong> solutions;
+	vector<ull> solutions;
 	int opt, indice;
 
 	// Traitement des options

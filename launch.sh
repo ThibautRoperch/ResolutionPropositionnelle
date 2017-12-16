@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Ce script permet d'utiliser le resolveur de problèmes en calcul propositionnel
+# Ce script permet d'utiliser le solveur de problèmes en calcul propositionnel
 
 # Compile les sources si le dossier bin est vide ou inexistant
 contenu_bin=$(ls -a bin | sed -e "/\.$/d" | wc -l)

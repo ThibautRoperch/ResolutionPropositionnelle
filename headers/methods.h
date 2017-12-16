@@ -21,14 +21,14 @@ using namespace std;
 /**
  * Calcul de toutes les possibilités et nettoyage pour ne garder que les solutions
  */
-void solver_brut(vector<ulong> &solutions, const vector<unsigned int> &dimensions) {
+void solver_brut(vector<ull> &solutions, const vector<unsigned int> &dimensions) {
 	unsigned int longueur_solutions = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
-	ulong nb_possibilites = pow(2, longueur_solutions) - 1;
+	ull nb_possibilites = pow(2, longueur_solutions) - 1;
 
 	// Génération de toutes les possibilités et nettoyage pour ne garder que les solutions (application des contraintes)
 	cout << "Génération des " << nb_possibilites << " possibilités et conservation des solutions" << endl;
 
-	for (ulong i = 0; i <= nb_possibilites; ++i) {
+	for (ull i = 0; i <= nb_possibilites; ++i) {
 		bool *poss = new bool[longueur_solutions];
 		int_to_binary(i, poss, longueur_solutions);
 
@@ -40,7 +40,7 @@ void solver_brut(vector<ulong> &solutions, const vector<unsigned int> &dimension
 		// Rendre la mémoire de la représentation binaire de la possibilité
 		delete[] poss;
 
-		// if (i % 100 == 0 || i == nb_possibilites) cout << "\r  Progression : " << i*100/nb_possibilites << " %";
+		if (i % 100 == 0 || i == nb_possibilites) cout << "\r  Progression : " << i*100/nb_possibilites << " %";
 	}
 
 	cout << endl;
@@ -144,7 +144,7 @@ void solver_efficace(vector<bool*> &solutions, const int cabanes, const int pige
 /**
  * Calcul de toutes les possibilités et nettoyage pour ne garder que les solutions
  */
-void solver_brut_mpi(vector<ulong> &solutions, vector<unsigned int> &dimensions) {
+void solver_brut_mpi(vector<ull> &solutions, vector<unsigned int> &dimensions) {
 	MPI_Reducer reducer;
 	reducer.solver_brut(solutions, dimensions);
 }

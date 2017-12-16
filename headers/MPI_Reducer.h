@@ -23,19 +23,19 @@ class MPI_Reducer {
 		 * Les solutions réparties entre les processus sont rassemblées par le processus maître
 		 * Données communes : dimensions du problème
 		 */
-		void solver_brut(std::vector<ulong> &solutions, std::vector<unsigned int> &dimensions) {
+		void solver_brut(std::vector<ull> &solutions, std::vector<unsigned int> &dimensions) {
 			int id_processus = MPI::COMM_WORLD.Get_rank();
 			int nb_processus = MPI::COMM_WORLD.Get_size();
 
 			unsigned int longueur_solutions = std::accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], std::multiplies<int>());
-			ulong nb_possibilites = pow(2, longueur_solutions) - 1;
+			ull nb_possibilites = pow(2, longueur_solutions) - 1;
 
 			if (id_processus == 0) {
 				// MASTER
 
-				ulong *tailles_locales = new ulong[nb_processus]; // une taille de tableau par processus
+				ull *tailles_locales = new ull[nb_processus]; // une taille de tableau par processus
 				unsigned int *indices_locaux = new unsigned int[nb_processus * 2]; // indice début, indice fin pour chaque processus
-				std::vector<ulong> *solutions_locales = new std::vector<ulong>[nb_processus * 2]; // des solutions pour chaque processus
+				std::vector<ull> *solutions_locales = new std::vector<ull>[nb_processus * 2]; // des solutions pour chaque processus
 
 				// Calcul du nombre de possibilités à calculer par chaque processus, avec répartition du reste si nb_possibilites%nb_processus != 0
 				for (int i = 0; i < nb_processus; ++i) {
@@ -96,14 +96,14 @@ class MPI_Reducer {
 				// SLAVE
 
 				MPI::Status etat;
-				ulong debut, fin;
+				ull debut, fin;
 
 				// Récupération des indices
 				MPI::COMM_WORLD.Recv(&debut, 1, MPI_INT, 0, MPI::ANY_TAG, etat);
 				MPI::COMM_WORLD.Recv(&fin, 1, MPI_INT, 0, MPI::ANY_TAG, etat);
 
 				// Calcul des sous-solutions
-				std::vector<ulong> sous_solutions;
+				std::vector<ull> sous_solutions;
 				local_solver_brut(sous_solutions, dimensions, debut, fin);
 
 				// Envoi du nombre de solutions au processus maître
@@ -117,16 +117,16 @@ class MPI_Reducer {
 			}
 		}
 
-		void local_solver_brut(std::vector<ulong> &solutions, const std::vector<unsigned int> &dimensions, ulong debut, ulong fin) {
+		void local_solver_brut(std::vector<ull> &solutions, const std::vector<unsigned int> &dimensions, ull debut, ull fin) {
 			int id_processus = MPI::COMM_WORLD.Get_rank();
 
 			unsigned int longueur_solutions = std::accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], std::multiplies<int>());
-			ulong nb_possibilites = fin - debut;
+			ull nb_possibilites = fin - debut;
 
 			// Génération de toutes les possibilités et nettoyage pour ne garder que les solutions (application des contraintes)
 			// std::cout << "Génération des " << nb_possibilites << " possibilités et conservation des solutions" << std::endl;
 
-			for (ulong i = debut; i <= fin; ++i) {
+			for (ull i = debut; i <= fin; ++i) {
 				bool *poss = new bool[longueur_solutions];
 				int_to_binary(i, poss, longueur_solutions);
 
