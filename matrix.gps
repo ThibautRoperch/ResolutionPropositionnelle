@@ -1,0 +1,15 @@
+# fichier matrix.gps
+set term pdfcairo enhanced size 6in,5in color font 'Helvetica,12'
+set output "matrix.pdf"
+# use of palette to have different line colors
+load 'palette.pal'
+# define grid
+set style line 102 lc rgb '#808080' lt 0 lw 1
+set grid back ls 102
+
+set key below
+set title "matrix product"
+set xlabel "dimension of matrix"
+set ylabel "Time in seconds"
+set xtics rotate by -90
+plot "outputs/method_1.gpd" using 1:2 with lines ls 1 title "m1", "outputs/method_2.gpd" using 1:2 with lines ls 2 title "m2", "outputsmethod_3.gpd" using 1:2 with lines ls 3 title "m3", "outputs/method_4.gpd" using 1:2 with lines ls 4 title "m4"

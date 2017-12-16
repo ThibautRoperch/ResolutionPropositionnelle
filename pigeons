@@ -1,8 +1,8 @@
 
 % clingo pigeons 0
 
-nb_pigeons(3). % hauteur
-nb_cabanes(3). % largeur
+nb_pigeons(4). % hauteur
+nb_cabanes(4). % largeur
 pigeon(1..X) :- nb_pigeons(X).
 cabane(1..X) :- nb_cabanes(X).
 
