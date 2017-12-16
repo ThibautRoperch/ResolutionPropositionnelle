@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
 			// solver_efficace(solutions, dimensions);
 		break;
 		case 3: // Méthode brute parallélisée avec OpenMP
-		 	// solver_brut_pragma(solutions, dimensions);
+		 	solver_brut_openmp(solutions, dimensions);
 		break;
 		case 4: // Méthode brute parallélisée avec MPI
 			solver_brut_mpi(solutions, dimensions);

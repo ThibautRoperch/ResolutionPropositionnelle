@@ -7,6 +7,7 @@
 #include <numeric>
 #include <functional>
 #include <cmath>
+#include <omp.h>
 
 #include "common.h"
 #include "constraints.h"
@@ -41,6 +42,39 @@ void solver_brut(vector<ull> &solutions, const vector<unsigned int> &dimensions)
 		delete[] poss;
 
 		if (i % 100 == 0 || i == nb_possibilites) cout << "\r  Progression : " << i*100/nb_possibilites << " %";
+	}
+
+	cout << endl;
+}
+
+/*********************************************************
+ * Solver brut (approche naïve) parallélisé avc openMP
+ */
+
+void solver_brut_openmp(vector<ull> &solutions, const vector<unsigned int> &dimensions) {
+	unsigned int longueur_solutions = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
+	ull nb_possibilites = pow(2, longueur_solutions) - 1;
+
+	// Génération de toutes les possibilités et nettoyage pour ne garder que les solutions (application des contraintes)
+	cout << "Génération des " << nb_possibilites << " possibilités et conservation des solutions" << endl;
+
+  // Parallélisation avec openMP
+  // Parallélisation possible étant donné que les possibilités sont générées indépendament
+  std::cout << "Nombre de thread : " << omp_get _num_threads() << std::endl;
+  #pragma omp parallel for
+	for (ull i = 0; i <= nb_possibilites; ++i) {
+		bool *poss = new bool[longueur_solutions];
+		int_to_binary(i, poss, longueur_solutions);
+
+		// Vérification des contraintes, conserver la solution au format décimal si c'en est une
+		if (test_solution_final(poss, dimensions)) {
+			solutions.push_back(i);
+		}
+
+		// Rendre la mémoire de la représentation binaire de la possibilité
+		delete[] poss;
+
+		//if (i % 100 == 0 || i == nb_possibilites) cout << "\r  Progression : " << i*100/nb_possibilites << " %";
 	}
 
 	cout << endl;
@@ -137,7 +171,7 @@ void solver_efficace(vector<bool*> &solutions, const int cabanes, const int pige
   solutions = solutionPartiel;  
 }*/
 
-/**********************************
+/*******************************************************
  * Solver brut (approche naïve) parallélisé avec MPI
  */
 
