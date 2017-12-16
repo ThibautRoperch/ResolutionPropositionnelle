@@ -60,11 +60,12 @@ Tableau de dimensions pour représenter les variables du problème (pigeons, cab
 
 | p et c | Nombre de sol | Temps d'exec m1 (brut) | Temps d'exec m2 (efficace) | Temps d'exec m3 (brut avec openMP) | Temps d'exec m4 (brut avec MPI) |
 |--------|---------------|------------------------|----------------------------|------------------------------------|---------------------------------|
-| 2p 2c  | 2 solutions   |       0m0.001s         |                            |                                    |            0m0.101s             | a verifier (mpi)
-| 3p 3c  | 6 solutions   |       0m0.001s         |                            |                                    |            0m0.119s             | idem
-| 4p 4c  | 24 solutions  |       0m0.008s         |                            |               1.644s               |                                 | 
-| 5p 5c  | 120 solutions |       0m3.157s         |                            |               8.468s               |            0m1.211s             | 
+| 2p 2c  | 2 solutions   |      0m00.001s         |                            |                                    |           0m00.071s             |
+| 3p 3c  | 6 solutions   |      0m00.001s         |                            |                                    |           0m00.076s             |
+| 4p 4c  | 24 solutions  |      0m00.008s         |                            |              01.644s               |                                 | 
+| 5p 5c  | 120 solutions |      0m03.157s         |                            |              08.468s               |           0m01.211s             | 
 | 6p 6c  | 720 solutions |    144m39.399s         |                            |                                    |          11m28.296s             |
+| 7p 7c  | ??? solutions |                        |                            |                                    |          13m08.667s             |
 
 ## Limites d'implémentation
 
