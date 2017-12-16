@@ -29,14 +29,23 @@ Pour la méthode MPI (méthode 4) :
 ## Travail effectué
 
 Nous avons implémenté plusieurs algos...
-
-Choix de la structure : étant donné qu'on connait à l'avance le nombre de solutions, les array sont plus optis que les vecteur (comparaison_structures.cpp)
-Une solution est un int plutot que un tableau de bool
-On travail avec des ulong, car le nombre de possibilités pour un probleme est exponentiel (68719476736 solutions pour 6 pigeons et 6 pigeonniers (2^6*6))
-
 version asp avec les contraintes des pigeons pour vérifier les résultats
 
 pour set les constraints, go dans headers/constraints.h
+
+### Stockage
+
+ne pas stocker toutes les possibilités, car la mémoire risque de saturer rapidement
+stocker les entiers correspondant auxsolutions, plutot que les matrices de binaires
+changer la méthode de print d'une solution en conséquence
+
+### Structures
+
+Étant donné qu'on connait à l'avance le nombre de solutions, les array sont plus optis que les vecteur (comparaison_structures.cpp)
+Une solution est représentée par un entier (ulong) plutot que par un tableau de bool, simplifiant ainsi la représentation et la manipulation des solutions (moins de pointeurs donc parrallélisation moins compliquée et moins de risques de problèmes de mémoire)
+On travail avec des ulong, car le nombre de possibilités pour un probleme est exponentiel (68719476736 solutions pour 6 pigeons et 6 pigeonniers (2^6*6))
+
+Tableau de dimensions pour représenter les variables du problème (pigeons, cabanes étant un pb à deux dimensions)
 
 ## Résultats
 
@@ -51,39 +60,29 @@ pour set les constraints, go dans headers/constraints.h
 
 | p et c | Nombre de sol | Temps d'exec m1 (brut) | Temps d'exec m2 (efficace) | Temps d'exec m3 (brut avec openMP) | Temps d'exec m4 (brut avec MPI) |
 |--------|---------------|------------------------|----------------------------|------------------------------------|---------------------------------|
-| 2p 2c  | 2 solutions   |         0.004s         |                            |                                    |             0m0.101s            |
-| 3p 3c  | 6 solutions   |         0.004s         |                            |                                    |             0m0.119s            |
-| 4p 4c  | 24 solutions  |         0.021s         |                            |               1.644s               |                                 | 
-| 5p 5c  | 120 solutions |         2.680s         |                            |               8.468s               |                                 | 
-| 6p 6c  |     solutions |                        |                            |                                    |                                 |
+| 2p 2c  | 2 solutions   |       0m0.001s         |                            |                                    |            0m0.101s             | a verifier (mpi)
+| 3p 3c  | 6 solutions   |       0m0.001s         |                            |                                    |            0m0.119s             | idem
+| 4p 4c  | 24 solutions  |       0m0.008s         |                            |               1.644s               |                                 | 
+| 5p 5c  | 120 solutions |       0m3.157s         |                            |               8.468s               |            0m1.211s             | 
+| 6p 6c  | 720 solutions |    144m39.399s         |                            |                                    |          11m28.296s             |
 
 ## Limites d'implémentation
 
-### Algo brut
+### Algo brut (version avec bitset)
 
 cabanes * pigeons <= 9999999 (initialisation de la taille de std::bitset, nombre de cases dans la matrice pigeons/pigeonniers)
 pow(2, cabanes*pigeons) < 18 446 744 073 709 551 615 (unsigned long long, nombre de matrices possibles)
 pow(2, cabanes*pigeons) < myvector.max_size() (nombre de matrices possibles)
 
+### Algo brut (version avec conversion en binaire "à la main")
+
+produit de la taille des dimensions < 4 294 967 295 (taille d'une solution au format binaire)
+pow(2, produit de la taille des dimensions) < 18 446 744 073 709 551 615 (nombre de possibilités)
+
 ## TODO
 
 * Faire le solver intuitivement efficace (solveur_efficace)
-* Paralléliser le solver bourrin avec OpenMP et MPI
 
-* Refaire les fichiers au propre (faire une classe de solver, nommer les fichiers comme demandé dans le sujet)
-
-* Faire le script (voir dernière partie de l'énoncé)
 * Exporter les résultats vers un graphe, comme au premier TP, pour être le meilleur groupe
 
-Remplacer unsigned long long par ulong
-
-stockage :
-ne pas stocker toutes les possibilités
-stocker les entiers correspondant auxsolutions, plutot que les matrices de binaires
-changer la méthode de print d'une solution en conséquence
-
-structures :
-une solution est un entier
-tableau de dimensions à la place de cabanes * pigeons
-
-un argument pour afficher les solutions
+* Représentation des contraintes

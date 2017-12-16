@@ -7,7 +7,7 @@
 #include <cmath>
 #include <omp.h>
 
-#include "../headers/MPI_reducer.h"
+#include "../headers/MPI_Reducer.h"
 #include "../headers/test.h"
 
 using namespace std;

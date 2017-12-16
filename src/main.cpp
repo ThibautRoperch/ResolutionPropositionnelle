@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
 		 	// solver_brut_pragma(solutions, dimensions);
 		break;
 		case 4: // Méthode brute parallélisée avec MPI
-			// solver_brut_mpi(solutions, dimensions);
+			solver_brut_mpi(solutions, dimensions);
 		break;
 		default:
 		break;
