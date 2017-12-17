@@ -60,7 +60,6 @@ void solver_brut_openmp(vector<ull> &solutions, const vector<unsigned int> &dime
 
   // Parallélisation avec openMP
   // Parallélisation possible étant donné que les possibilités sont générées indépendament
-  std::cout << "Nombre de thread : " << omp_get _num_threads() << std::endl;
   #pragma omp parallel for
 	for (ull i = 0; i <= nb_possibilites; ++i) {
 		bool *poss = new bool[longueur_solutions];
@@ -72,9 +71,16 @@ void solver_brut_openmp(vector<ull> &solutions, const vector<unsigned int> &dime
 		}
 
 		// Rendre la mémoire de la représentation binaire de la possibilité
-		delete[] poss;
+    delete[] poss;
+    
+    if (i == 0) {
+      std::cout << "Nombre de thread : " << omp_get_num_threads() << std::endl;
+    }
 
-		//if (i % 100 == 0 || i == nb_possibilites) cout << "\r  Progression : " << i*100/nb_possibilites << " %";
+		if (omp_get_thread_num() == 0 && (i % 100 == 0 || i == nb_possibilites)) {
+      double nbPossibiliteThread = (nb_possibilites/omp_get_num_threads());
+      cout << "\r  Progression : " << i*100/nbPossibiliteThread << " % i = " << i;
+    }
 	}
 
 	cout << endl;
@@ -91,28 +97,6 @@ void solver_brut_openmp(vector<ull> &solutions, const vector<unsigned int> &dime
     firstMatriceVide[i] = 0;
   }
   return firstMatriceVide;
-}
-
-bool test_solution_max(bool * solution, const int cabanes, const int pigeons) {
-  // Contrainte 1 : un pigeon est dans un et un seul pigeonnier
-  for (int i = 0; i < pigeons; ++i) {
-    int nb_cabanes = 0;
-    for (int j = 0; j < cabanes; ++j)
-      nb_cabanes += (solution[i*cabanes + j]);
-    if (nb_cabanes > 1) {
-      return false;
-    }
-  }
-  // Contrainte 2 : un pigeonnier accueille au plus un pigeon
-  for (int i = 0; i < cabanes; ++i) {
-    int nb_pigeons = 0;
-    for (int j = 0; j < pigeons; ++j)
-      nb_pigeons += (solution[i + j*cabanes]);
-    if (nb_pigeons > 1) {
-      return false;
-    }
-  }
-  return true;
 }
 
 vector<bool*> solver_intelligent(vector<bool*> solutionsPrecedentes, int indexPigeon, const int cabanes, const int pigeons) {

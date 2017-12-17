@@ -107,8 +107,8 @@ Un tableau de dimensions (unsigned int) représente les variables du problème (
 | 3p 3c  | 511            | 6 solutions   |     0m00.001s   |                 |     0m00.020s   |     0m00.076s   |
 | 4p 4c  | 65535          | 24 solutions  |     0m00.008s   |                 |     0m00.031s   |     0m00.077s   | 
 | 5p 5c  | 33554431       | 120 solutions |     0m03.157s   |                 |     0m01.440s   |     0m01.211s   | 
-| 6p 6c  | 68719476735    | 720 solutions |   144m39.399s   |                 |                 |    11m28.296s   |
-| 7p 7c  |                | ??? solutions |                 |                 |                 |    13m08.667s   |
+| 6p 6c  | 68719476735    | 720 solutions |   144m39.399s   |                 |    50m26.262s   |    11m28.296s   |
+| 7p 7c  | 562949953421311| ??? solutions |                 |                 |                 |    13m08.667s   |
 | 8p 8c  |                | ??? solutions |                 |                 |                 |    14m01.674s   |
 
 ## Limites d'implémentation
