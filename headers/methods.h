@@ -7,6 +7,7 @@
 #include <numeric>
 #include <functional>
 #include <cmath>
+#include <omp.h>
 
 #include "common.h"
 #include "constraints.h"
@@ -46,6 +47,45 @@ void solver_brut(vector<ull> &solutions, const vector<unsigned int> &dimensions)
 	cout << endl;
 }
 
+/*********************************************************
+ * Solver brut (approche naïve) parallélisé avc openMP
+ */
+
+void solver_brut_openmp(vector<ull> &solutions, const vector<unsigned int> &dimensions) {
+	unsigned int longueur_solutions = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
+	ull nb_possibilites = pow(2, longueur_solutions) - 1;
+
+	// Génération de toutes les possibilités et nettoyage pour ne garder que les solutions (application des contraintes)
+	cout << "Génération des " << nb_possibilites << " possibilités et conservation des solutions" << endl;
+
+  // Parallélisation avec openMP
+  // Parallélisation possible étant donné que les possibilités sont générées indépendament
+  #pragma omp parallel for
+	for (ull i = 0; i <= nb_possibilites; ++i) {
+		bool *poss = new bool[longueur_solutions];
+		int_to_binary(i, poss, longueur_solutions);
+
+		// Vérification des contraintes, conserver la solution au format décimal si c'en est une
+		if (test_solution_final(poss, dimensions)) {
+			solutions.push_back(i);
+		}
+
+		// Rendre la mémoire de la représentation binaire de la possibilité
+    delete[] poss;
+    
+    if (i == 0) {
+      std::cout << "Nombre de thread : " << omp_get_num_threads() << std::endl;
+    }
+
+		if (omp_get_thread_num() == 0 && (i % 100 == 0 || i == nb_possibilites)) {
+      double nbPossibiliteThread = (nb_possibilites/omp_get_num_threads());
+      cout << "\r  Progression : " << i*100/nbPossibiliteThread << " % i = " << i;
+    }
+	}
+
+	cout << endl;
+}
+
 
 /**********************************
  * Solveur efficace
@@ -57,28 +97,6 @@ void solver_brut(vector<ull> &solutions, const vector<unsigned int> &dimensions)
     firstMatriceVide[i] = 0;
   }
   return firstMatriceVide;
-}
-
-bool test_solution_max(bool * solution, const int cabanes, const int pigeons) {
-  // Contrainte 1 : un pigeon est dans un et un seul pigeonnier
-  for (int i = 0; i < pigeons; ++i) {
-    int nb_cabanes = 0;
-    for (int j = 0; j < cabanes; ++j)
-      nb_cabanes += (solution[i*cabanes + j]);
-    if (nb_cabanes > 1) {
-      return false;
-    }
-  }
-  // Contrainte 2 : un pigeonnier accueille au plus un pigeon
-  for (int i = 0; i < cabanes; ++i) {
-    int nb_pigeons = 0;
-    for (int j = 0; j < pigeons; ++j)
-      nb_pigeons += (solution[i + j*cabanes]);
-    if (nb_pigeons > 1) {
-      return false;
-    }
-  }
-  return true;
 }
 
 vector<bool*> solver_intelligent(vector<bool*> solutionsPrecedentes, int indexPigeon, const int cabanes, const int pigeons) {
@@ -137,7 +155,7 @@ void solver_efficace(vector<bool*> &solutions, const int cabanes, const int pige
   solutions = solutionPartiel;  
 }*/
 
-/**********************************
+/*******************************************************
  * Solver brut (approche naïve) parallélisé avec MPI
  */
 
