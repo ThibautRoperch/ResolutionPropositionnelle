@@ -1,10 +1,55 @@
 #ifndef CONSTRAINTS_H
 #define CONSTRAINTS_H
 
+#include <iostream>
+#include <string>
 #include <vector>
 
+class Constraint {
+	private:
+		bool signe;
+		int min;
+		int max;
+		unsigned int indice_dimension;
+		std::string nom_dimension;
+
+	public:
+		Constraint(bool signe, int alpha, int beta, unsigned int V, std::string contrainte) : signe(signe), min(alpha), max(beta), indice_dimension(V), nom_dimension(contrainte) {};
+		~Constraint() {};
+
+		/**
+		 * Test de la contrainte sur une potentielle solution représentée en binaire
+		 */
+		bool test(bool* solution, const std::vector<unsigned int> &dimensions) {
+			for (unsigned int i = 0; i < dimensions[indice_dimension]; ++i) { // parcours de la dimension
+				for (unsigned int j = 0; j < dimensions.size() && j != indice_dimension; ++j) { // pour chaque autre dimension
+					int res = 0;
+					for (unsigned int k = 0; k < dimensions[j]; ++k) { // comptage des true sur les autres dimensions
+						res += (solution[i * dimensions[j] + k]) ? 1 : 0;
+					}
+					if (signe == true) {
+						if (res < min || res > max) { // vérification du min et du max
+							return false;
+						}
+					} else {
+						if (res >= min || res <= max) { // vérification du min et du max
+							return false;
+						}
+					}
+				}
+			}
+
+			return true;
+		}
+
+		void afficher() {
+			std::cout << signe << " (" << min << ", " << max << ", " << nom_dimension << ")" << std::endl;
+		}
+
+};
+
 /**
- * Les contraintes appliquées à une solution représentée par en binaire
+ * Les contraintes appliquées à une solution représentée en binaire
  */
 bool test_solution_final(bool* solution, const std::vector<unsigned int> &dimensions) {
 	unsigned int pigeons = dimensions[0];

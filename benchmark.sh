@@ -14,6 +14,17 @@ outputs="outputs/"; # sortie des fichiers
 
 # Exécution de l'exécutable pour chaque couple pigeons/pigeonniers et pour chaque méthode
 
-#todo
+# for methode in $methodes
+# do
+# 	sortie=$outputs"method_"$methode".gpd"
+	
+# 	echo "#dimension\ttime" > $sortie
+
+# 	for dimension in $dimensions
+# 	do
+# 		res=$({ /usr/bin/time -f "%e" ./$executable -p $pp -c $pp -m $methode; } 2>&1)
+# 		echo "$dimension\t$res" >> $sortie
+# 	done
+# done
 
 gnuplot "comparaison.gps"

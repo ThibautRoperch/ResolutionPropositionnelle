@@ -40,7 +40,7 @@ void solver_brut(vector<ull> &solutions, const vector<unsigned int> &dimensions)
 		// Rendre la mémoire de la représentation binaire de la possibilité
 		delete[] poss;
 
-		if (i % 100 == 0 || i == nb_possibilites) cout << "\r  Progression : " << i*100/nb_possibilites << " %";
+		if (i % 1000 == 0 || i == nb_possibilites) cout << "\r  Progression : " << i*100/nb_possibilites << " %";
 	}
 
 	cout << endl;

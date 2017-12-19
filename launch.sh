@@ -60,7 +60,9 @@ do
 
         if [ "$methode" = "4" ]
         then
-            time mpirun -n 4 ./bin/main.exe -p $pigeons -c $cabanes -m $methode $afficher_solutions
+            echo -e "Nombre de processus à utiliser :"
+            read processus
+            time mpirun -n $processus ./bin/main.exe -p $pigeons -c $cabanes -m $methode $afficher_solutions
         else
             time ./bin/main.exe -p $pigeons -c $cabanes -m $methode $afficher_solutions
         fi

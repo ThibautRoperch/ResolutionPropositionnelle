@@ -1,0 +1,13 @@
+# Problème des pigeons et des pigeonniers
+
+# Variables (dimensions)
+
+v pigeons 3
+v pigeonniers 4
+
+# Contraintes (opérateurs) de cardinalité
+
+c 1 1 pigeons         # chaque pigeon est dans un et un seul pigeonnier (la somme des true de chaque pigeon dans chaque dimension = 1)
+c 0 1 pigeonniers     # chaque pigeonnier contient entre 0 et 1 pigeon(s) (la somme des true de chaque pigeonnier dans chaque dimension = 0 ou 1)
+
+# c neg 0 1 pigeons

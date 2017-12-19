@@ -68,9 +68,9 @@ Nous avons implémenté plusieurs algorithmes, chacun ayant une approche différ
 * Approche efficace (-m 2) : vérification des contraintes lors de l'instanciation des variables (implantation plus efficace)
 Nous avons parallélisé la seconde méthode avec OpenMP ou MPI, donnant lieu respectivement à la 3 ème et 4 ème méthode de résolution d'un problème.
 
-Une comparaison des méthodes pour quelques instances du problème des pigeons et des pigeonniers est proposée dans le fichier comparaison.pdf, généré à l'issue de l'exécution du script benchmark.sh.
+Une comparaison des méthodes pour quelques instances du problème des pigeons et des pigeonniers est proposée dans le fichier `comparaison.pdf`, généré à l'issue de l'exécution du script `benchmark.sh`.
 
-Nous avons également conçu une version ASP du problème afin de vérifier nos résultats.
+Nous avons également conçu une version ASP du problème afin de vérifier nos résultats (fichier `pigeons`).
 
 ### Stockage
 
@@ -80,15 +80,17 @@ Nous ne stockons ainsi que les solutions du problème.
 
 ### Structures
 
-Étant donné qu'on connait à l'avance le nombre de solutions, les array sont plus optimisés que les vecteur (voir le fichier cpp/comparaison_structures.cpp).
+Étant donné qu'on connait à l'avance le nombre de solutions, les array sont plus optimisés que les vecteur (voir le fichier `cpp/comparaison_structures.cpp`).
 
-Une solution est représentée par un entier (type défini ull) plutot que par un tableau de bool, simplifiant ainsi la représentation et la manipulation des solutions (moins de pointeurs, donc parrallélisation moins compliquée et moins de risques de problèmes de mémoire)
+Une solution est représentée par un entier (type défini `ull`) plutot que par un tableau de bool, simplifiant ainsi la représentation et la manipulation des solutions (moins de pointeurs, donc parrallélisation moins compliquée et moins de risques de problèmes de mémoire)
 
-Une solution est un ull (unsigned long long), car le nombre de possibilités pour un problème est rapidement très élevé (2^6*6, soit 68719476736 solutions pour 6 pigeons et 6 pigeonniers). Borne max de ull : 2(64)-1, l'instance pigeons=pigeonniers=8 est donc intraitable.
+Une solution est un `ull` (pour `unsigned long long`), car le nombre de possibilités pour un problème est rapidement très élevé (2^6*6, soit 68719476736 solutions pour 6 pigeons et 6 pigeonniers). Borne max de `ull` : 2(64)-1, l'instance pigeons=pigeonniers=8 est donc intraitable.
 
-Un tableau de dimensions (unsigned int) représente les variables du problème (pigeons et cabanes étant un problème à deux dimensions, les dimensions sont donc p et c, avec p le nombre de pigeons et c le nombre de pigeonniers).
+Un tableau de dimensions (`unsigned int`) représente les variables du problème (pigeons et cabanes étant un problème à deux dimensions, les dimensions sont donc p et c, avec p le nombre de pigeons et c le nombre de pigeonniers).
 
 ## Résultats
+
+Tests effectués sur un processeur Intel® Core™ i7-6700HQ CPU @ 2.60GHz × 8
 
     p = pigeon
     c = pigeonnier
@@ -107,22 +109,22 @@ Un tableau de dimensions (unsigned int) représente les variables du problème (
 | 3p 3c  | 6 solutions   |     0m00.001s   |                 |                 |     0m00.076s   |
 | 4p 4c  | 24 solutions  |     0m00.008s   |                 |       01.644s   |     0m00.077s   | 
 | 5p 5c  | 120 solutions |     0m03.157s   |                 |       08.468s   |     0m01.211s   | 
-| 6p 6c  | 720 solutions |   144m39.399s   |                 |                 |    11m28.296s   |
-| 7p 7c  | ??? solutions |                 |                 |                 |    13m08.667s   |
-| 8p 8c  | ??? solutions |                 |                 |                 |    14m01.674s   |
+| 6p 6c  | 720 solutions |   144m39.399s   |                 |                 |    39m09.323s   |
+| 7p 7c  | ??? solutions |                 |                 |                 |                 |
+| 8p 8c  | ??? solutions |                 |                 |                 |                 |
 
 ## Limites d'implémentation
 
-### Approche naïve/brute (version avec bitset)
+### Approche naïve/brute (version avec bitset, remplacée par la conversion "à la main")
 
 cabanes * pigeons <= 9999999 (initialisation de la taille de std::bitset, nombre de cases dans la matrice pigeons/pigeonniers)
-pow(2, cabanes*pigeons)-1 < 18 446 744 073 709 551 615 (unsigned long long, nombre de matrices possibles)
+pow(2, cabanes*pigeons)-1 < 18 446 744 073 709 551 615 (`unsigned long long`, nombre de matrices possibles)
 pow(2, cabanes*pigeons)-1 < myvector.max_size() (nombre de matrices possibles)
 
 ### Approche naïve/brute (version avec conversion en binaire "à la main")
 
-produit de la taille des dimensions < 4 294 967 295 (taille d'une solution au format binaire)
-pow(2, produit de la taille des dimensions)-1 < 2^(64)-1 (nombre de possibilités)
+produit de la taille des dimensions < 4 294 967 295 (`unsigned int`, taille d'une solution au format binaire)
+pow(2, produit de la taille des dimensions)-1 < 2^(64)-1 (`unsigned long long`, nombre de possibilités)
 
 ## TODO
 
@@ -135,3 +137,10 @@ pow(2, produit de la taille des dimensions)-1 < 2^(64)-1 (nombre de possibilité
 * Renommer les fichiers comme il faut (cf l'énoncé), virer les fichiers old -> je le fais ce soir (tibo, sam 16/12)
 
 pour set les contraintes, go dans contraints.h
+Classe contrainte
+
+## Sources
+
+Cours de Jean-Michel Richer : http://info.univ-angers.fr/~richer/parallelism.php
+MPI datatypes : http://mpi-forum.org/docs/mpi-2.1/mpi21-report-bw/node330.htm
+C++ datatypes : https://fr.wikipedia.org/wiki/Entier_(informatique)#Types_d'entiers_courants

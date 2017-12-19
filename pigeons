@@ -1,8 +1,10 @@
 
 % clingo pigeons 0
 
-nb_pigeons(4). % hauteur
-nb_cabanes(4). % largeur
+% ca marche que quand nb_cabanes <= nb_pigeons
+
+nb_pigeons(6). % hauteur
+nb_cabanes(6). % largeur
 pigeon(1..X) :- nb_pigeons(X).
 cabane(1..X) :- nb_cabanes(X).
 
@@ -23,4 +25,3 @@ ok(X) :- sol(X, Y), nb_pigeons(N), X >= 1, X <= N.
 
 #show sol/2.
 
-% ca marche que quand nb_cabanes <= nb_pigeons
