@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <vector>
 #include <numeric>
+#include <algorithm>
 #include <functional>
 #include <cmath>
 #include <omp.h>
@@ -86,75 +87,6 @@ void solver_brut_openmp(vector<ull> &solutions, const vector<unsigned int> &dime
 	cout << endl;
 }
 
-
-/**********************************
- * Solveur efficace
- */
-
-/*bool* initSolutionVide(const int col, const int row) {  
-  bool firstMatriceVide = new bool[col*row];
-  for (int i=0; i<(col*row); ++i) {
-    firstMatriceVide[i] = 0;
-  }
-  return firstMatriceVide;
-}
-
-vector<bool*> solver_intelligent(vector<bool*> solutionsPrecedentes, int indexPigeon, const int cabanes, const int pigeons) {
-  int indexStart = indexPigeon*cabanes;
-  int size = cabanes*pigeon;
-
-  vector<bool*> solutionsfinal;
-  vector<bool*> solutionTmp;
-  vector<bool*> solutions;
-  for (auto solution : solutionsPrecedentes) {
-    solutionTmp.clear();
-    bool maSolutionTmp = new bool[size];
-    std::copy(std::begin(solution), std::end(solution), std::begin(maSolutionTmp));
-    solutionTmp.push_back(maSolutionTmp);
-    for (int i=indexStart; i<(indexStart*cabanes); ++i) {
-      solutions.clear();
-      for (auto tmp : solutionTmp) {
-        bool sol1 = new bool[size];
-        std::copy(std::begin(tmp), std::end(tmp), std::begin(sol1));
-        sol1[i] = 1;
-        if (test_solution_max(sol1,cabanes,pigeons)) {
-          solutions.push_back(sol1);
-        }
-        bool sol2 = new bool[size];
-        std::copy(std::begin(tmp), std::end(tmp), std::begin(sol2));
-        sol2[i] = 0;
-        if (test_solution_max(sol2,cabanes,pigeons)) {
-          solutions.push_back(sol2);
-        }
-      } 
-      solutionTmp.clear();
-      solutionTmp = solutions;      
-    }
-    solutionsfinal.insert(solutionsfinal.end(),solutionTmp.begin(),solutionTmp.end());
-  }
-
-  solutions.clear();
-  solutionTmp.clear();
-  return solutionsfinal;
-}
-
-void solver_efficace(vector<bool*> &solutions, const int cabanes, const int pigeons) {
-  int index = 0;
-  vector<bool*> solutionPartiel;
-  bool* firstMatriceVide = initSolutionVide(cabanes,pigeons);
-  print_solutions(firstMatriceVide,cabanes,pigeons);
-  solutionPartiel.push_back(firstMatriceVide);
-  while (index < pigeons) {
-    solutionPartiel = solver_intelligent(solutionPartiel, index, cabanes, pigeons);
-    index++;
-  }
-
-  // Test les solutions de nouveaux suivant les contraintes
-  //
-
-  solutions = solutionPartiel;  
-}*/
-
 /*******************************************************
  * Solver brut (approche naïve) parallélisé avec MPI
  */
@@ -165,6 +97,40 @@ void solver_efficace(vector<bool*> &solutions, const int cabanes, const int pige
 void solver_brut_mpi(vector<ull> &solutions, vector<unsigned int> &dimensions) {
 	MPI_Reducer reducer;
 	reducer.solver_brut(solutions, dimensions);
+}
+
+/**********************************
+ * Solveur efficace
+ */
+
+vector<bool*> solver_efficace(bool* tab, int i, int solutions_length, const vector<unsigned int> &dimensions) {
+    vector<bool*> solutions;
+    vector<bool*> solutions_enfants;
+
+    // Si on est à la fin, on stock la solution
+    if (i == solutions_length) {
+        if (test_solution_final(tab, dimensions)) {
+          solutions.push_back(tab);
+        }
+        return solutions;
+    }
+
+    for (int j = 0; j <= 1; ++j) {
+        tab[i] += j;
+        // On test les contraintes en cours de construction, si la solution est possible, 
+        // on passe à la case suivant sinon on ne fait rien et évite ainsi le parcours inutile de la branche
+        if (test_solution_partiel(tab, dimensions)) {
+            bool* newTab = new bool[solutions_length];
+            for (int k=0; k < solutions_length; ++k) {
+                newTab[k] = tab[k];
+            }
+            solutions_enfants = solver_efficace(newTab, i+1, solutions_length, dimensions);
+            solutions.insert(solutions.end(), solutions_enfants.begin(), solutions_enfants.end());
+        }
+        tab[i] -= j;
+    }
+
+    return solutions;
 }
 
 #endif

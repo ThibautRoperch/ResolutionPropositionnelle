@@ -41,6 +41,26 @@ void print_solutions(const vector<ull> &solutions, const vector<unsigned int> &d
 	}
 }
 
+void print_solutions_recursif(const vector<bool*> &solutions, const vector<unsigned int> &dimensions) {
+	unsigned int solutions_length = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
+	for (auto sol : solutions) {		
+		if (dimensions.size() == 2) {
+			for (unsigned int i = 0; i < dimensions[0]; ++i) {
+				for (unsigned int j = 0; j < dimensions[1]; ++j) {
+					cout << sol[i*dimensions[1] + j] << " ";
+				}
+				cout << endl;
+			}
+			cout << endl;
+		} else {
+			for (unsigned int i = 0; i < solutions_length; ++i) {
+				cout << sol[i] << " ";
+			}
+			cout << endl;
+		}
+	}
+}
+
 void print_help() {
     cout << "usage: exe -o 10 -c 12\n"
         "\t-p, --pigeons, nombre d'pigeons à prendre en compte\n"
@@ -55,6 +75,7 @@ int main(int argc, char* argv[]) {
 	vector<unsigned int> dimensions;
 	bool display_solutions = false;
 	vector<ull> solutions;
+	vector<bool*> solutions_recursif;
 	int opt, indice;
 
 	// Traitement des options
@@ -100,7 +121,11 @@ int main(int argc, char* argv[]) {
 			solver_brut(solutions, dimensions);    
 		break;
 		case 2: // Méthode efficace
-			// solver_efficace(solutions, dimensions);
+			{
+				int solutions_length = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
+				bool* matriceVide = new bool[solutions_length];	
+				solutions_recursif = solver_efficace(matriceVide, 0, solutions_length, dimensions);
+			}
 		break;
 		case 3: // Méthode brute parallélisée avec OpenMP
 		 	solver_brut_openmp(solutions, dimensions);
@@ -113,8 +138,13 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Affichagedes solutions et du nombre de solutions
-	if (display_solutions) print_solutions(solutions, dimensions);
-	std::cout << solutions.size() << " solutions" << std::endl;
+	if (methode == 2) {		
+		if (display_solutions) print_solutions_recursif(solutions_recursif, dimensions);
+		std::cout << solutions_recursif.size() << " solutions" << std::endl;
+	} else {
+		if (display_solutions) print_solutions(solutions, dimensions);
+		std::cout << solutions.size() << " solutions" << std::endl;
+	}
 
 	return EXIT_SUCCESS;
 }
