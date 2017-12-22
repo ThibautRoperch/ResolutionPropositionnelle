@@ -133,12 +133,19 @@ int main(int argc, char* argv[]) {
 		case 4: // Méthode brute parallélisée avec MPI
 			solver_brut_mpi(solutions, dimensions);
 		break;
+		case 5: // Méthode efficace parallélisée avec OpenMP
+			{
+				int solutions_length = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
+				bool* matriceVide = new bool[solutions_length];	
+				solutions_recursif = solver_efficace_openMP(matriceVide, 0, solutions_length, dimensions);
+			}		
+		break;
 		default:
 		break;
 	}
 
 	// Affichagedes solutions et du nombre de solutions
-	if (methode == 2) {		
+	if (methode == 2 || methode == 5) {		
 		if (display_solutions) print_solutions_recursif(solutions_recursif, dimensions);
 		std::cout << solutions_recursif.size() << " solutions" << std::endl;
 	} else {

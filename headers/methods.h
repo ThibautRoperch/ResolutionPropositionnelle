@@ -133,4 +133,35 @@ vector<bool*> solver_efficace(bool* tab, int i, int solutions_length, const vect
     return solutions;
 }
 
+vector<bool*> solver_efficace_openMP(bool* tab, int i, int solutions_length, const vector<unsigned int> &dimensions) {
+    vector<bool*> solutions;
+    vector<bool*> solutions_enfants;
+
+    // Si on est à la fin, on stock la solution
+    if (i == solutions_length) {
+        if (test_solution_final(tab, dimensions)) {
+          solutions.push_back(tab);
+        }
+        return solutions;
+    }
+
+    for (int j = 0; j <= 1; ++j) {
+        tab[i] += j;
+        // On test les contraintes en cours de construction, si la solution est possible, 
+        // on passe à la case suivant sinon on ne fait rien et évite ainsi le parcours inutile de la branche
+        if (test_solution_partiel(tab, dimensions)) {
+            bool* newTab = new bool[solutions_length];
+            #pragma omp parallel for
+            for (int k=0; k < solutions_length; ++k) {
+                newTab[k] = tab[k];
+            }
+            solutions_enfants = solver_efficace(newTab, i+1, solutions_length, dimensions);
+            solutions.insert(solutions.end(), solutions_enfants.begin(), solutions_enfants.end());
+        }
+        tab[i] -= j;
+    }
+
+    return solutions;
+}
+
 #endif
