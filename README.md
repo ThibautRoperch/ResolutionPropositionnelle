@@ -22,9 +22,14 @@ Le programme `src/main.cpp` permet de résoudre un autre problème du même type
 
 Le programme `src/comparaison_structures.cpp` permet de comparer en terme de temps les différentes structures envisagées pour ce projet (voir partie *Travail effectuée*).
 
-Le script `perf.sh` permet de lancer et mesurer le temps d'exécution d'une instance satisfiable puis d'une instance insatisfiable du problème des pigeons et des pigeonniers.
+Le script `perf.sh` permet de lancer et mesurer le temps d'exécution d'une instance satisfiable puis d'une instance insatisfiable du problème des pigeons et des pigeonniers :
 
-Le script `benchmark.sh` permet de tester et comparer toutes les méthodes pour une instance du problème des pigeons et des pigeonniers (de 1 à 6) via le graphique qu'il génère.
+    bash perf.sh
+
+Le script `benchmark.sh` permet de tester et comparer toutes les méthodes pour une instance du problème des pigeons et des pigeonniers (pigeons=pigeonniers=4 par défaut) via le graphique qu'il génère :
+
+    bash benchmark.sh 5             # l'entier donné correspond au plus grand problème (nombre max de pigeons et de pigeonniers)
+
 
 ## Compilation manuelle
 
@@ -91,11 +96,14 @@ Nous ne stockons ainsi que les solutions du problème.
 
 Étant donné qu'on connait à l'avance le nombre de solutions, les array sont plus optimisés que les vecteur (voir le fichier `cpp/comparaison_structures.cpp`).
 
-Une solution est représentée par un entier (type défini `ull`) plutot que par un tableau de bool, simplifiant ainsi la représentation et la manipulation des solutions (moins de pointeurs, donc parrallélisation moins compliquée et moins de risques de problèmes de mémoire)
-
+Pour l'approche naïve, une solution est représentée par un entier (type défini `ull`) plutot que par un tableau de bool, simplifiant ainsi la représentation et la manipulation des solutions (moins de pointeurs, donc parrallélisation moins compliquée et moins de risques de problèmes de mémoire).
 Une solution est un `ull` (`unsigned long long`), car le nombre de possibilités pour un problème est rapidement très élevé (2^6*6, soit 68719476736 solutions pour 6 pigeons et 6 pigeonniers). Borne max de `ull` : 2(64)-1, l'instance pigeons=pigeonniers=8 est donc intraitable.
 
+Pour l'approche récursive, une solution est représentée par un tableau de bool ; ainsi, la limite du type `ull` (2^(64)-1) n'existe pas, et cette méthode est capable de résoudre des problèmes de plus grande taille que pigeons=pigeonniers=8.
+
 Un tableau de dimensions (`unsigned int`) représente les variables du problème (pigeons et cabanes étant un problème à deux dimensions, les dimensions sont donc p et c, avec p le nombre de pigeons et c le nombre de pigeonniers).
+
+Un contrainte de cardinalité (α, β, V) est est représentée par son signe (contrainte à valider ou à falsifier), un alpha (min), un beta (max) et l'indice de la dimension sur laquelle la containte est appliquée.
 
 ## Résultats
 
@@ -142,20 +150,12 @@ pow(2, produit de la taille des dimensions)-1 < 2^(64)-1 (nombre de possibilité
 
 ### Approche efficace/récursive
 
-Limites plus larges si on représente les solutions en bool*
+pow(2, produit de la taille des dimensions)-1 < 2^(64)-1 (nombre de possibilités)
 
-Même si, avec cette approche, le nombre de possibilités n'a pas besoin d'être calculé et toutes les possibilités n'ont pas besoin d'être instanciées, les limites d'implémentation sont les mêmes : une solution est représentée par un entier `unsigned long long`.
+Avec cette approche, le nombre de possibilités n'a pas besoin d'être calculé et toutes les possibilités n'ont pas besoin d'être instanciées. De plus, une solution n'est pas représentée par un entier (`ull`), mais par un tableau de `bool`. Ainsi, la limite du type `ull` (2^(64)-1) n'est pas présente pour cette approche.
 
 ## TODO
 
 Interprétation des résultats
 
-Rectifier la méthode m2, qui retourne des doublons de solution, et màj la m5 comme la m2
-
-Le script benchmark déconne (et rajouter la méthode 5)
-
-Limite de Approche efficace/récursive
-
 Batterie de tests pour m2 et m5 (on peut aller au-delà de 8p 8c)
-
-Encore des fuites mémoire à corriger pour les méthodes efficaces

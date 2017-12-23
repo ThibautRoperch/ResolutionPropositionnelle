@@ -49,7 +49,7 @@ void solver_brut(vector<ull> &solutions, const vector<unsigned int> &dimensions,
 }
 
 /*********************************************************
- * Solver brut (approche naïve) parallélisé avc openMP
+ * Solver brut (approche naïve) parallélisé avec OpenMP
  */
 
 void solver_brut_openMP(vector<ull> &solutions, const vector<unsigned int> &dimensions, const vector<Constraint> &constraints) {
@@ -59,7 +59,7 @@ void solver_brut_openMP(vector<ull> &solutions, const vector<unsigned int> &dime
   // Génération de toutes les possibilités et nettoyage pour ne garder que les solutions (application des contraintes)
   cout << "Génération des " << nb_possibilites << " possibilités et conservation des solutions" << endl;
 
-  // Parallélisation avec openMP
+  // Parallélisation avec OpenMP
   // Parallélisation possible étant donné que les possibilités sont générées indépendament
   #pragma omp parallel for
   for (ull i = 0; i <= nb_possibilites; ++i) {
@@ -132,7 +132,7 @@ vector<bool*> solver_efficace(bool* tab, unsigned int i, unsigned int solutions_
     tab[i] -= j;
   }
 
-  // for (auto sol : solutions_enfants) delete[] sol;
+  delete[] tab;
 
   return solutions;
 }

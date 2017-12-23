@@ -12,4 +12,4 @@ set title "Comparaison des méthodes appliquées à des instances du problème d
 set xlabel "Nombre de pigeons et pigeonniers"
 set ylabel "Temps de résolution en secondes"
 set xtics rotate by -90
-plot "outputs/method_1.gpd" using 1:2 with lines ls 1 title "m1", "outputs/method_2.gpd" using 1:2 with lines ls 2 title "m2", "outputsmethod_3.gpd" using 1:2 with lines ls 3 title "m3", "outputs/method_4.gpd" using 1:2 with lines ls 4 title "m4"
+plot "outputs/method_1.gpd" using 1:2 with lines ls 1 title "m1 (brute)", "outputs/method_2.gpd" using 1:2 with lines ls 2 title "m2 (efficace)", "outputs/method_3.gpd" using 1:2 with lines ls 3 title "m3 (brute OpenMP)", "outputs/method_4.gpd" using 1:2 with lines ls 4 title "m4 (brute MPI)", "outputs/method_5.gpd" using 1:2 with lines ls 5 title "m5 (efficace OpenMP)"

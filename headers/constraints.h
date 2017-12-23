@@ -8,13 +8,13 @@
 class Constraint {
   private:
     bool signe;
-    int min;
-    int max;
+    unsigned int min;
+    unsigned int max;
     unsigned int indice; // indice dans le vecteur de variables et de dimensions
     std::string nom_dimension;
 
   public:
-    Constraint(bool signe, int alpha, int beta, unsigned int V) : signe(signe), min(alpha), max(beta), indice(V) {};
+    Constraint(bool signe, unsigned int alpha, unsigned int beta, unsigned int V) : signe(signe), min(alpha), max(beta), indice(V) {};
     ~Constraint() {};
 
     /**
@@ -25,7 +25,7 @@ class Constraint {
       for (unsigned int dim = 0; dim < dimensions.size(); ++dim) { // pour chaque autre dimension du problème
         if (dim != indice) { // les autres dimensions, celle-ci exclue
           for (unsigned int i = 0; i < dimensions[indice]; ++i) { // parcours de la dimension de la contrainte
-            int res = 0;
+            unsigned int res = 0;
             for (unsigned int j = 0; j < dimensions[dim]; ++j) { // comptage des true sur les autres dimensions
               if (indice == 0) // première dimension
                 res += (solution[prev_dim_size + i * dimensions[dim] + j]) ? 1 : 0;
@@ -56,7 +56,7 @@ class Constraint {
       for (unsigned int dim = 0; dim < dimensions.size(); ++dim) { // pour chaque autre dimension du problème
         if (dim != indice) { // les autres dimensions, celle-ci exclue
           for (unsigned int i = 0; i < dimensions[indice]; ++i) { // parcours de la dimension de la contrainte
-            int res = 0;
+            unsigned int res = 0;
             for (unsigned int j = 0; j < dimensions[dim]; ++j) { // comptage des true sur les autres dimensions
                 if (indice == 0) // première dimension
                   res += (solution[prev_dim_size + i * dimensions[dim] + j]) ? 1 : 0;
