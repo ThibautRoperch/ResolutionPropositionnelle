@@ -89,7 +89,7 @@ Un exemple de fichier avec les explications de syntaxe est disponible (`pigeons.
 | 5p 5c  | 33554431       | 120 solutions   |     0m03.157s   |    0m00.009s    |     0m01.440s   |     0m01.211s   |    0m00.068s    |
 | 6p 6c  | 68719476735    | 720 solutions   |   144m39.399s   |    0m00.032s    |    50m26.262s   |    11m28.296s   |    0m00.159s    |
 | 7p 7c  | 562949953421311| 5040 solutions  |       -         |    0m00.274s    |    +12h         |    13m08.667s   |    0m01.633s    |
-| 8p 8c  |       -        | 40320 solutions |       -         |    0m01.877s    |        -        |    14m01.674s   |    0m22.901s    |
+| 8p 8c  |       -        | 40320 solutions |       -         |    0m01.877s    |        -        |    14m01.674s   |    0m02.901s    |
 
 ## Interprétation des résultats
 
@@ -100,8 +100,8 @@ Au-delà de 5 pigeons et 5 pigeonniers (`bash benchmark.sh 6`), ce sont les mét
 Ainsi, on constate que la parallélisation avec openMP est plus rapide qu'avec MPI pour les problèmes de petite taille (5p, 5c). Au delà, MPI devient beaucoup plus performant. De plus, quelque soit la taille des dimensions du problème, la méthode récursive (efficace) est la meilleure. En effet, dans cette méthode on teste les contraintes pendant la construction de la solution, ce qui permet d'éviter de créer pleins de solutions inutilement.
 
 Nous pouvons ainsi établir le classement général suivant, pour des instances du problème des pigeons et des pigeonniers :
-1. Méthode efficace (récursive) parallélisée avec OpenMP, rapide et capable de résoudre des problèmes avec un nombre de pigeons et de pigeonniers élevé
-2. Méthode efficace (récursive), moins rapide mais applicable à tous les problèmes
+1. Méthode efficace (récursive), rapide, prend peu de place mémoire comparé à la méthode brute, capable de résoudre des problèmes avec un nombre de pigeons et de pigeonniers élevé
+2. Méthode efficace (récursive) parallélisée avec OpenMP, moins rapide que la version non parallélisée, applicable à toutes tailles de problèmes
 3. Méthode brute (naïve) parallélisée avec OpenMP, à privilégier à sa version MPI pour les petites instances (5 pigeons / 5 pigeonniers et moins)
 4. Méthode brute (naïve) parallélisée avec MPI, à privilégier à sa version OpenMP pour les grosses instances (6 pigeons / 6 pigeonniers et plus), mais est incapable de résoudre un problème de 8 pigeons et 8 pigeonniers, donc son intérêt est assez limité
 5. Méthode brute (naïve) non parallélisée, prend beaucoup de temps et de place mémoire très rapidement, et ne peut résoudre 8 pigeons et 8 pigeonniers.

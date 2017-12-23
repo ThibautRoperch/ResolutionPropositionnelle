@@ -59,6 +59,13 @@ do
 
         echo -e "\n"
 
+        if [ "$methode" = "3" ] || [ "$methode" = "5" ]
+        then
+            echo -e "Nombre de threads à utiliser :"
+            read threads
+            export OMP_NUM_THREADS=$threads;
+        fi
+
         if [ "$methode" = "4" ]
         then
             echo -e "Nombre de processeurs à utiliser :"
@@ -92,6 +99,13 @@ do
         fi
 
         echo -e "\n"
+
+        if [ "$methode" = "3" ] || [ "$methode" = "5" ]
+        then
+            echo -e "Nombre de threads à utiliser :"
+            read threads
+            export OMP_NUM_THREADS=$threads;
+        fi
 
         if [ "$methode" = "4" ]
         then
