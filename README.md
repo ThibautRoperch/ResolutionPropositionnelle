@@ -30,7 +30,6 @@ Le script `benchmark.sh` permet de tester et comparer toutes les méthodes pour 
 
     bash benchmark.sh 5             # l'entier donné correspond au plus grand problème (nombre max de pigeons et de pigeonniers)
 
-
 ## Compilation manuelle
 
     make
@@ -66,13 +65,54 @@ Avec :
 * -m l'identifiant de la méthode de calcul (1, 4)
 * -d pour afficher les solutions sur la sortie standard
 
+Un exemple de fichier avec les explications de syntaxe est disponible (`pigeons.txt`).
+
+## Résultats
+
+    p = pigeon
+    c = pigeonnier
+
+    m1 = méthode brute  (approche naïve)
+    m2 = méthode efficace (récursive) 
+    m3 = méthode brute parallélisée avec OpenMP
+    m4 = méthode brute parallélisée avec MPI
+    m5 = méthode efficace parallélisée avec OpenMP
+
+    une ligne de matrice = un pigeon
+    une colonne de matrice = un pigeonnier
+
+| p et c | Nombre de poss | Nombre de sol   | Temps d'exec m1 | Temps d'exec m2 | Temps d'exec m3 | Temps d'exec m4 | Temps d'exec m5 |
+|--------|----------------|-----------------|-----------------|-----------------|-----------------|-----------------|-----------------|
+| 2p 2c  | 15             | 2 solutions     |     0m00.001s   |    0m00.006s    |     0m00.018s   |     0m00.071s   |    0m00.030s    |
+| 3p 3c  | 511            | 6 solutions     |     0m00.001s   |    0m00.007s    |     0m00.020s   |     0m00.076s   |    0m00.036s    |
+| 4p 4c  | 65535          | 24 solutions    |     0m00.014s   |    0m00.007s    |     0m00.035s   |     0m00.077s   |    0m00.046s    |
+| 5p 5c  | 33554431       | 120 solutions   |     0m03.157s   |    0m00.009s    |     0m01.440s   |     0m01.211s   |    0m00.068s    |
+| 6p 6c  | 68719476735    | 720 solutions   |   144m39.399s   |    0m00.032s    |    50m26.262s   |    11m28.296s   |    0m00.159s    |
+| 7p 7c  | 562949953421311| 5040 solutions  |       -         |    0m00.274s    |    +12h         |    13m08.667s   |    0m01.633s    |
+| 8p 8c  |       -        | 40320 solutions |       -         |    0m01.877s    |        -        |    14m01.674s   |    0m22.901s    |
+
+## Interprétation des résultats
+
+Comme nous pouvons le constater avec la baterrie de tests effectuée et le fichier `comparaison.pdf`, les méthodes non parallélisées sont les plus rapides pour les problèmes simples (5 pigeons / 5 pigeonniers et moins), la méthode récursive étant la plus rapide de toutes (`bash benchmark.sh 5`). On constate aussi que la parallélisation avec openMP est plus rapide qu'avec MPI.
+
+Au-delà de 5 pigeons et 5 pigeonniers (`bash benchmark.sh 6`), ce sont les méthodes parallélisées qui sont les plus rapides. La méthode récursive parallélisée est ici aussi la plus rapide de toutes. On constate également que la parallélisation avec MPI devient plus beucoup plus performante que sa parallélisation avec OpenMP.
+
+Ainsi, on constate que la parallélisation avec openMP est plus rapide qu'avec MPI pour les problèmes de petite taille (5p, 5c). Au delà, MPI devient beaucoup plus performant. De plus, quelque soit la taille des dimensions du problème, la méthode récursive (efficace) est la meilleure. En effet, dans cette méthode on teste les contraintes pendant la construction de la solution, ce qui permet d'éviter de créer pleins de solutions inutilement.
+
+Nous pouvons ainsi établir le classement général suivant, pour des instances du problème des pigeons et des pigeonniers :
+1. Méthode efficace (récursive) parallélisée avec OpenMP, rapide et capable de résoudre des problèmes avec un nombre de pigeons et de pigeonniers élevé
+2. Méthode efficace (récursive), moins rapide mais applicable à tous les problèmes
+3. Méthode brute (naïve) parallélisée avec OpenMP, à privilégier à sa version MPI pour les petites instances (5 pigeons / 5 pigeonniers et moins)
+4. Méthode brute (naïve) parallélisée avec MPI, à privilégier à sa version OpenMP pour les grosses instances (6 pigeons / 6 pigeonniers et plus), mais est incapable de résoudre un problème de 8 pigeons et 8 pigeonniers, donc son intérêt est assez limité
+5. Méthode brute (naïve) non parallélisée, prend beaucoup de temps et de place mémoire très rapidement, et ne peut résoudre 8 pigeons et 8 pigeonniers.
+
 ## Travail effectué
 
 Nous avons implémenté plusieurs algorithmes, chacun ayant une approche différente du problème :
 * Approche naïve/brute (-m 1) : instanciation et vérification de toutes les possibilités avec les contraintes pour ne garder que les solutions (complexité élevée en terme de temps et d'espace)
 * Approche efficace/récursive (-m 2) : vérification des contraintes lors de l'instanciation des variables (implantation plus efficace, gain de temps et d'espace par rapport à la méthode précédente)
 Nous avons parallélisé la première méthode avec OpenMP ou MPI, donnant lieu respectivement à la 3ème et 4ème méthode de résolution.
-Nous avons parallélisé la seconde méthode avec OpenMP, donnant lieu 5ème méthode de résolution.
+Nous avons parallélisé la seconde méthode avec OpenMP, donnant lieu à la 5ème méthode de résolution.
 
 Une comparaison des méthodes pour quelques instances du problème des pigeons et des pigeonniers est proposée dans le fichier `comparaison.pdf`, généré à l'issue de l'exécution du script `benchmark.sh`.
 
@@ -105,43 +145,6 @@ Un tableau de dimensions (`unsigned int`) représente les variables du problème
 
 Un contrainte de cardinalité (α, β, V) est est représentée par son signe (contrainte à valider ou à falsifier), un alpha (min), un beta (max) et l'indice de la dimension sur laquelle la containte est appliquée.
 
-## Résultats
-
-    p = pigeon
-    c = pigeonnier
-
-    m1 = méthode brute  (approche naïve)
-    m2 = méthode efficace (récursive) 
-    m3 = méthode brute parallélisée avec OpenMP
-    m4 = méthode brute parallélisée avec MPI
-    m5 = méthode efficace parallélisée avec OpenMP
-
-    une ligne de matrice = un pigeon
-    une colonne de matrice = un pigeonnier
-
-| p et c | Nombre de poss | Nombre de sol   | Temps d'exec m1 | Temps d'exec m2 | Temps d'exec m3 | Temps d'exec m4 | Temps d'exec m5 |
-|--------|----------------|-----------------|-----------------|-----------------|-----------------|-----------------|-----------------|
-| 2p 2c  | 15             | 2 solutions     |     0m00.007s   |     0m00.006s   |     0m00.018s   |     0m00.071s   |     0m00.029s   |
-| 3p 3c  | 511            | 6 solutions     |     0m00.007s   |     0m00.007s   |     0m00.020s   |     0m00.076s   |     0m00.030s   |
-| 4p 4c  | 65535          | 24 solutions    |     0m00.008s   |     0m00.008s   |     0m00.031s   |     0m00.077s   |     0m00.040s   |
-| 5p 5c  | 33554431       | 120 solutions   |     0m03.157s   |     0m00.015s   |     0m01.440s   |     0m01.211s   |     0m00.050s   |
-| 6p 6c  | 68719476735    | 720 solutions   |   144m39.399s   |     0m00.067s   |    50m26.262s   |    11m28.296s   |     0m00.205s   |
-| 7p 7c  | 562949953421311| 5040 solutions  |        -        |     0m00.274s   |    +12h         |    13m08.667s   |     0m01.684s   |
-| 8p 8c  |       -        | 40320 solutions |        -        |     0m01.877s   |        -        |    14m01.674s   |     0m02.013s   |
-
-## Interprétation des résultats
-
-Comme nous pouvons le constater avec la baterrie de tests effectuée et le fichier `comparaison.pdf`, les méthodes non parallélisées sont les plus rapides pour les problèmes simples (5 pigeons / 5 pigeonniers et moins), la méthode récursive étant la plus rapide de toutes (`bash benchmark.sh 5`.
-
-Au-delà de 5 pigeons et 5 pigeonniers (`bash benchmark.sh 6`), ce sont les méthodes parallélisées qui sont les plus rapides. La méthode récursive parallélisée est ici aussi la plus rapide de toutes. On constate également que la parallélisation avec MPI de la méthode naïve est plus rapide que sa parallélisation avec OpenMP.
-
-Nous pouvons ainsi établir le classement général suivant, pour des instances du problème des pigeons et des pigeonniers :
-1. Méthode efficace (récursive) parallélisée avec OpenMP, rapide et capable de résoudre des problèmes avec un nombre de pigeons et de pigeonniers élevé
-2. Méthode efficace (récursive)
-3. Méthode brute (naïve) parallélisée avec OpenMP, à privilégier à sa version MPI pour les petites instances
-4. Méthode brute (naïve) parallélisée avec MPI, à privilégier à sa version OpenMP pour les grosses isntances, mais est limitée à 8 pigeons et 8 pigeonniers
-5. Méthode brute (naïve) non parallélisée, prend beaucoup de temps et de place mémoire très rapidement 
-
 ## Limites d'implémentation
 
 ### Approche naïve/brute (version avec bitset)
@@ -158,8 +161,6 @@ produit de la taille des dimensions < 4 294 967 295 (taille d'une solution
 pow(2, produit de la taille des dimensions)-1 < 2^(64)-1 (nombre de possibilités)
 
 ### Approche efficace/récursive
-
-pow(2, produit de la taille des dimensions)-1 < 2^(64)-1 (nombre de possibilités)
 
 Avec cette approche, le nombre de possibilités n'a pas besoin d'être calculé et toutes les possibilités n'ont pas besoin d'être instanciées. De plus, une solution n'est pas représentée par un entier (`ull`), mais par un tableau de `bool`. Ainsi, la limite du type `ull` (2^(64)-1) n'est pas présente pour cette approche.
 

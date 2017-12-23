@@ -118,7 +118,7 @@ vector<bool*> solver_efficace(bool* tab, unsigned int i, unsigned int solutions_
   }
   
   for (int j = 0; j <= 1; ++j) {
-    tab[i] += j;
+    tab[i] = j;
     // On test les contraintes en cours de construction, si la solution est possible, 
     // on passe à la case suivante sinon on ne fait rien et évite ainsi le parcours inutile de la branche
     if (partially_valid_constraints(tab, dimensions, constraints)) {
@@ -129,7 +129,6 @@ vector<bool*> solver_efficace(bool* tab, unsigned int i, unsigned int solutions_
       solutions_enfants = solver_efficace(newTab, i+1, solutions_length, dimensions, constraints);
       solutions.insert(solutions.end(), solutions_enfants.begin(), solutions_enfants.end());
     }
-    tab[i] -= j;
   }
 
   delete[] tab;
@@ -156,7 +155,7 @@ vector<bool*> solver_efficace_openMP(bool* tab, unsigned int i, unsigned int sol
   }
 
   for (int j = 0; j <= 1; ++j) {
-    tab[i] += j;
+    tab[i] = j;
     // On test les contraintes en cours de construction, si la solution est possible, 
     // on passe à la case suivante sinon on ne fait rien et évite ainsi le parcours inutile de la branche
     if (partially_valid_constraints(tab, dimensions, constraints)) {
@@ -168,7 +167,6 @@ vector<bool*> solver_efficace_openMP(bool* tab, unsigned int i, unsigned int sol
       solutions_enfants = solver_efficace(newTab, i+1, solutions_length, dimensions, constraints);
       solutions.insert(solutions.end(), solutions_enfants.begin(), solutions_enfants.end());
     }
-    tab[i] -= j;
   }
 
   return solutions;
