@@ -15,11 +15,11 @@ int main(int argc, char *argv[]) {
     vector<Constraint> constraints;
     // et les autres trucs du programme
 
-	ifstream fichier(argv[1]);
+  ifstream fichier(argv[1]);
 
-	if (fichier.is_open()) {
-	    string ligne;
-		while (getline(fichier, ligne)) {
+  if (fichier.is_open()) {
+      string ligne;
+    while (getline(fichier, ligne)) {
             int indice = 0;
 
             // Esquive des espaces
@@ -71,14 +71,14 @@ int main(int argc, char *argv[]) {
                 }
             } // Fin "si la ligne est non vide et ne commence pas par #"
         }
-		fichier.close();
+    fichier.close();
 
         constraints[0].afficher();
         constraints[1].afficher();
-	} else {
-		cout << "Impossible d'ouvrir le fichier " << argv[1] << endl;
-		return EXIT_FAILURE;
-	}
+  } else {
+    cout << "Impossible d'ouvrir le fichier " << argv[1] << endl;
+    return EXIT_FAILURE;
+  }
 
     return 0;
 }

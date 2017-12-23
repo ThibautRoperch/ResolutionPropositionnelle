@@ -13,18 +13,18 @@ Thibaut Roperch
 
 ## Contenu
 
-Le script launch.sh permet d'utiliser le solveur facilement (il compile et exécute les programmes) :
+Le script `launch.sh` permet d'utiliser le solveur facilement (il compile et exécute le projet) :
 
     bash launch.sh
 
-Le programme src/solver.cpp permet de résoudre un problème de manière non parallèle, via deux approches et méthodes différentes.
-Le programme src/psolver.cpp permet de résoudre un problème de manière parallèle en utilisant MPI (4 threads) ou OpenMP.
+Le programme `src/pigeons.cpp` permet de résoudre un problème des pigeons et des pigeonniers.
+Le programme `src/main.cpp` permet de résoudre un autre problème du même type que les pigeons et les pigeonniers, depuis un fichier représentant les contraintes.
 
-Le programme src/comparaison_structures.cpp permet de comparer en terme de temps les différentes structures envisagées pour ce projet.
+Le programme `src/comparaison_structures.cpp` permet de comparer en terme de temps les différentes structures envisagées pour ce projet (voir partie *Travail effectuée*).
 
-Le script perf.sh permet de lancer et mesurer le temps d'exécution d'une instance satisfiable puis d'une instance insatisfiable du problème des pigeons.
+Le script `perf.sh` permet de lancer et mesurer le temps d'exécution d'une instance satisfiable puis d'une instance insatisfiable du problème des pigeons et des pigeonniers.
 
-Le script benchamrk.sh permet de tester et comparer toutes les méthodes pour une instance du problème des pigeons et des pigeonniers (de 1 à 6) via le graphique qu'il génère.
+Le script `benchamrk.sh` permet de tester et comparer toutes les méthodes pour une instance du problème des pigeons et des pigeonniers (de 1 à 6) via le graphique qu'il génère.
 
 ## Compilation
 
@@ -70,7 +70,15 @@ Nous avons parallélisé la seconde méthode avec OpenMP ou MPI, donnant lieu re
 
 Une comparaison des méthodes pour quelques instances du problème des pigeons et des pigeonniers est proposée dans le fichier `comparaison.pdf`, généré à l'issue de l'exécution du script `benchmark.sh`.
 
-Nous avons également conçu une version ASP du problème afin de vérifier nos résultats (fichier `pigeons`).
+Nous avons également conçu une version ASP du problème afin de vérifier nos résultats (fichier `pigeons-asp`).
+
+Nous avons généralisé le problème des pigeons et des pigeonniers ; ainsi, le programme `src/main.cpp` est capable de lire et traiter un fichier décrivant un problème modélisé en calcul propositionnel sous la forme de contraintes de cardinalité (α, β, V).
+
+Un fichier décrivant un programme doit respecter la syntaxe suivante :
+* Un commentaire *one line* est précédé du caractère `#`,
+* Une variable est déclarée avec le caractère `v`, suivi du nom de la variable, puis de sa valeur (un entier supérieur à 0),
+* Une contrainte (α, β, V) est déclarée avec le caractère `c`, suivi du mot clé `neg` si la contrainte est à inverser, du min (α), du max(β), et de la variable concernée par la contrainte (V).
+Un exemple est disponible dans le fichier `pigeons.txt`.
 
 ### Stockage
 
@@ -114,7 +122,7 @@ Tests effectués sur un processeur Intel® Core™ i7-6700HQ CPU @ 2.60GHz × 8
 
 ## Limites d'implémentation
 
-### Approche naïve/brute (version avec bitset, remplacée par la conversion "à la main")
+### Approche naïve/brute (version avec bitset)
 
 cabanes * pigeons <= 9999999 (initialisation de la taille de std::bitset, nombre de cases dans la matrice pigeons/pigeonniers)
 pow(2, cabanes*pigeons)-1 < 18 446 744 073 709 551 615 (`unsigned long long`, nombre de matrices possibles)
