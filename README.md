@@ -121,17 +121,26 @@ Un contrainte de cardinalité (α, β, V) est est représentée par son signe (c
 
 | p et c | Nombre de poss | Nombre de sol   | Temps d'exec m1 | Temps d'exec m2 | Temps d'exec m3 | Temps d'exec m4 | Temps d'exec m5 |
 |--------|----------------|-----------------|-----------------|-----------------|-----------------|-----------------|-----------------|
-| 2p 2c  | 15             | 2 solutions     |     0m00.001s   |    0m00.006s    |     0m00.018s   |     0m00.071s   |                 |
-| 3p 3c  | 511            | 6 solutions     |     0m00.001s   |    0m00.007s    |     0m00.020s   |     0m00.076s   |                 |
-| 4p 4c  | 65535          | 24 solutions    |     0m00.008s   |    0m00.008s    |     0m00.031s   |     0m00.077s   |                 |
-| 5p 5c  | 33554431       | 120 solutions   |     0m03.157s   |    0m00.015s    |     0m01.440s   |     0m01.211s   |                 |
-| 6p 6c  | 68719476735    | 720 solutions   |   144m39.399s   |    0m00.067s    |    50m26.262s   |    11m28.296s   |                 |
-| 7p 7c  | 562949953421311| 5040 solutions  |       -         |    0m00.274s    |    +12h         |    13m08.667s   |                 |
-| 8p 8c  |       -        | 40320 solutions |       -         |    0m01.877s    |        -        |    14m01.674s   |                 |
+| 2p 2c  | 15             | 2 solutions     |     0m00.007s   |     0m00.006s   |     0m00.018s   |     0m00.071s   |     0m00.029s   |
+| 3p 3c  | 511            | 6 solutions     |     0m00.007s   |     0m00.007s   |     0m00.020s   |     0m00.076s   |     0m00.030s   |
+| 4p 4c  | 65535          | 24 solutions    |     0m00.008s   |     0m00.008s   |     0m00.031s   |     0m00.077s   |     0m00.040s   |
+| 5p 5c  | 33554431       | 120 solutions   |     0m03.157s   |     0m00.015s   |     0m01.440s   |     0m01.211s   |     0m00.050s   |
+| 6p 6c  | 68719476735    | 720 solutions   |   144m39.399s   |     0m00.067s   |    50m26.262s   |    11m28.296s   |     0m00.205s   |
+| 7p 7c  | 562949953421311| 5040 solutions  |        -        |     0m00.274s   |    +12h         |    13m08.667s   |     0m01.684s   |
+| 8p 8c  |       -        | 40320 solutions |        -        |     0m01.877s   |        -        |    14m01.674s   |     0m02.013s   |
 
 ## Interprétation des résultats
 
-Comme nous pouvons le constater avec la baterrie de tests effectuée et le fichier `comparaison.pdf`,
+Comme nous pouvons le constater avec la baterrie de tests effectuée et le fichier `comparaison.pdf`, les méthodes non parallélisées sont les plus rapides pour les problèmes simples (5 pigeons / 5 pigeonniers et moins), la méthode récursive étant la plus rapide de toutes (`bash benchmark.sh 5`.
+
+Au-delà de 5 pigeons et 5 pigeonniers (`bash benchmark.sh 6`), ce sont les méthodes parallélisées qui sont les plus rapides. La méthode récursive parallélisée est ici aussi la plus rapide de toutes. On constate également que la parallélisation avec MPI de la méthode naïve est plus rapide que sa parallélisation avec OpenMP.
+
+Nous pouvons ainsi établir le classement général suivant, pour des instances du problème des pigeons et des pigeonniers :
+1. Méthode efficace (récursive) parallélisée avec OpenMP, rapide et capable de résoudre des problèmes avec un nombre de pigeons et de pigeonniers élevé
+2. Méthode efficace (récursive)
+3. Méthode brute (naïve) parallélisée avec OpenMP, à privilégier à sa version MPI pour les petites instances
+4. Méthode brute (naïve) parallélisée avec MPI, à privilégier à sa version OpenMP pour les grosses isntances, mais est limitée à 8 pigeons et 8 pigeonniers
+5. Méthode brute (naïve) non parallélisée, prend beaucoup de temps et de place mémoire très rapidement 
 
 ## Limites d'implémentation
 
@@ -156,6 +165,7 @@ Avec cette approche, le nombre de possibilités n'a pas besoin d'être calculé 
 
 ## TODO
 
-Interprétation des résultats
-
-Batterie de tests pour m2 et m5 (on peut aller au-delà de 8p 8c)
+Dans solveur_efficace_openMP :
+      solutions_enfants = solver_efficace(newTab, i+1, solutions_length, dimensions, constraints);
+c normal ?
+refaire les tests en conséquence

@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
   while ((opt = getopt_long(argc, argv, "hf:m:d", long_option, &indice)) != -1) {
     switch (opt) {
     case 'f':
-      file_name = atoi(optarg);
+      file_name = optarg;
       break;
     case 'm':
       method = atoi(optarg);

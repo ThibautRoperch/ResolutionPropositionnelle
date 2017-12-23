@@ -14,7 +14,7 @@ do
     # Menu principal
     echo -e ""
     echo -e "[1] Recompiler les sources"
-    echo -e "[2] Supprimer l'exécutable"
+    echo -e "[2] Supprimer les exécutables"
     echo -e "[3] Exécuter une instance du problème des pigeons et des pigeonniers"
     echo -e "[4] Résoudre un autre problème"
     echo -e "[0] Quitter"
