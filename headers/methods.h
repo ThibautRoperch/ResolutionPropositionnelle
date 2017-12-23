@@ -164,7 +164,7 @@ vector<bool*> solver_efficace_openMP(bool* tab, unsigned int i, unsigned int sol
       for (unsigned int k=0; k < solutions_length; ++k) {
         newTab[k] = tab[k];
       }
-      solutions_enfants = solver_efficace(newTab, i+1, solutions_length, dimensions, constraints);
+      solutions_enfants = solver_efficace_openMP(newTab, i+1, solutions_length, dimensions, constraints);
       solutions.insert(solutions.end(), solutions_enfants.begin(), solutions_enfants.end());
     }
   }
