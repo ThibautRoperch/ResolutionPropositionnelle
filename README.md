@@ -152,6 +152,10 @@ Interprétation des résultats
 
 Rectifier la méthode m2, qui retourne des doublons de solution, et màj la m5 comme la m2
 
-Le script benchmark déconne
+Le script benchmark déconne (et rajouter la méthode 5)
 
 Limite de Approche efficace/récursive
+
+Batterie de tests pour m2 et m5 (on peut aller au-delà de 8p 8c)
+
+Encore des fuites mémoire à corriger pour les méthodes efficaces

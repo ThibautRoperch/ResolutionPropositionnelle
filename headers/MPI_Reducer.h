@@ -32,8 +32,8 @@ class MPI_Reducer {
      * Données communes : dimensions du problème
      */
     void solver_brut(std::vector<ull> &solutions, const std::vector<unsigned int> &dimensions, const std::vector<Constraint> &constraints) {
-      unsigned int longueur_solutions = std::accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], std::multiplies<int>());
-      ull nb_possibilites = pow(2, longueur_solutions) - 1;
+      unsigned int solutions_length = std::accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], std::multiplies<int>());
+      ull nb_possibilites = pow(2, solutions_length) - 1;
 
       if (id_processus == 0) {
         // MASTER
@@ -127,15 +127,15 @@ class MPI_Reducer {
     }
 
     void local_solver_brut(std::vector<ull> &solutions, const std::vector<unsigned int> &dimensions, const std::vector<Constraint> &constraints, ull debut, ull fin) {
-      unsigned int longueur_solutions = std::accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], std::multiplies<int>());
+      unsigned int solutions_length = std::accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], std::multiplies<int>());
       ull nb_possibilites = fin - debut;
 
       // Génération de toutes les possibilités et nettoyage pour ne garder que les solutions (application des contraintes)
       // std::cout << "Génération des " << nb_possibilites << " possibilités et conservation des solutions" << std::endl;
 
       for (ull i = debut; i <= fin; ++i) {
-        bool *poss = new bool[longueur_solutions];
-        int_to_binary(i, poss, longueur_solutions);
+        bool *poss = new bool[solutions_length];
+        int_to_binary(i, poss, solutions_length);
 
         // Vérification des contraintes, conserver la solution au format décimal si c'en est une
         if (valid_constraints(poss, dimensions, constraints)) {

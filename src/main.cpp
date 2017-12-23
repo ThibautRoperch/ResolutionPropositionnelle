@@ -127,8 +127,9 @@ int main(int argc, char* argv[]) {
       break;
 		case 2: // Méthode efficace
 			{
-				int solutions_length = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
-				bool* matriceVide = new bool[solutions_length];	
+				unsigned int solutions_length = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
+				bool* matriceVide = new bool[solutions_length];
+        for (unsigned int i = 0; i < solutions_length; ++i) matriceVide[i] = 0; // initialiser la matrice avec des 0
 				solutions_recursif = solver_efficace(matriceVide, 0, solutions_length, dimensions, constraints);
 			}
       break;
@@ -140,10 +141,11 @@ int main(int argc, char* argv[]) {
       break;
 		case 5: // Méthode efficace parallélisée avec OpenMP
 			{
-				int solutions_length = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
-				bool* matriceVide = new bool[solutions_length];	
+				unsigned int solutions_length = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
+				bool* matriceVide = new bool[solutions_length];
+        for (unsigned int i = 0; i < solutions_length; ++i) matriceVide[i] = 0; // initialiser la matrice avec des 0
 				solutions_recursif = solver_efficace_openMP(matriceVide, 0, solutions_length, dimensions, constraints);
-			}		
+			}
 		  break;
     default:
       break;
@@ -155,6 +157,7 @@ int main(int argc, char* argv[]) {
     if (solutions_recursif.size() == 0) cout << "INSATISFIABLE" << endl;
     else cout << "SATISFIABLE" << endl;
 		cout << solutions_recursif.size() << " solutions" << endl;
+    for (auto sol : solutions_recursif) delete[] sol;
 	} else {
 		if (display_solutions) print_solutions(solutions, dimensions);
     if (solutions.size() == 0) cout << "INSATISFIABLE" << endl;

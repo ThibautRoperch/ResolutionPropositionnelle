@@ -24,15 +24,15 @@ using namespace std;
  * Calcul de toutes les possibilités et nettoyage pour ne garder que les solutions
  */
 void solver_brut(vector<ull> &solutions, const vector<unsigned int> &dimensions, const vector<Constraint> &constraints) {
-  unsigned int longueur_solutions = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
-  ull nb_possibilites = pow(2, longueur_solutions) - 1;
+  unsigned int solutions_length = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
+  ull nb_possibilites = pow(2, solutions_length) - 1;
 
   // Génération de toutes les possibilités et nettoyage pour ne garder que les solutions (application des contraintes)
   cout << "Génération des " << nb_possibilites << " possibilités et conservation des solutions" << endl;
 
   for (ull i = 0; i <= nb_possibilites; ++i) {
-    bool *poss = new bool[longueur_solutions];
-    int_to_binary(i, poss, longueur_solutions);
+    bool *poss = new bool[solutions_length];
+    int_to_binary(i, poss, solutions_length);
 
     // Vérification des contraintes, conserver la solution au format décimal si c'en est une
     if (valid_constraints(poss, dimensions, constraints)) {
@@ -53,8 +53,8 @@ void solver_brut(vector<ull> &solutions, const vector<unsigned int> &dimensions,
  */
 
 void solver_brut_openMP(vector<ull> &solutions, const vector<unsigned int> &dimensions, const vector<Constraint> &constraints) {
-  unsigned int longueur_solutions = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
-  ull nb_possibilites = pow(2, longueur_solutions) - 1;
+  unsigned int solutions_length = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
+  ull nb_possibilites = pow(2, solutions_length) - 1;
 
   // Génération de toutes les possibilités et nettoyage pour ne garder que les solutions (application des contraintes)
   cout << "Génération des " << nb_possibilites << " possibilités et conservation des solutions" << endl;
@@ -63,8 +63,8 @@ void solver_brut_openMP(vector<ull> &solutions, const vector<unsigned int> &dime
   // Parallélisation possible étant donné que les possibilités sont générées indépendament
   #pragma omp parallel for
   for (ull i = 0; i <= nb_possibilites; ++i) {
-    bool *poss = new bool[longueur_solutions];
-    int_to_binary(i, poss, longueur_solutions);
+    bool *poss = new bool[solutions_length];
+    int_to_binary(i, poss, solutions_length);
 
     // Vérification des contraintes, conserver la solution au format décimal si c'en est une
     if (valid_constraints(poss, dimensions, constraints)) {
@@ -107,10 +107,12 @@ vector<bool*> solver_efficace(bool* tab, unsigned int i, unsigned int solutions_
   vector<bool*> solutions;
   vector<bool*> solutions_enfants;
 
-  // Si on est à la fin, on stock la solution
+  // Si on est à la fin, on stock la solution si c'en est une, sinon on libère la mémoire
   if (i == solutions_length) {
     if (valid_constraints(tab, dimensions, constraints)) {
       solutions.push_back(tab);
+    } else {
+      delete[] tab;
     }
     return solutions;
   }
@@ -118,7 +120,7 @@ vector<bool*> solver_efficace(bool* tab, unsigned int i, unsigned int solutions_
   for (int j = 0; j <= 1; ++j) {
     tab[i] += j;
     // On test les contraintes en cours de construction, si la solution est possible, 
-    // on passe à la case suivant sinon on ne fait rien et évite ainsi le parcours inutile de la branche
+    // on passe à la case suivante sinon on ne fait rien et évite ainsi le parcours inutile de la branche
     if (partially_valid_constraints(tab, dimensions, constraints)) {
       bool* newTab = new bool[solutions_length];
       for (unsigned int k=0; k < solutions_length; ++k) {
@@ -129,6 +131,8 @@ vector<bool*> solver_efficace(bool* tab, unsigned int i, unsigned int solutions_
     }
     tab[i] -= j;
   }
+
+  // for (auto sol : solutions_enfants) delete[] sol;
 
   return solutions;
 }
@@ -141,10 +145,12 @@ vector<bool*> solver_efficace_openMP(bool* tab, unsigned int i, unsigned int sol
   vector<bool*> solutions;
   vector<bool*> solutions_enfants;
 
-  // Si on est à la fin, on stock la solution
+  // Si on est à la fin, on stock la solution si c'en est une, sinon on libère la mémoire
   if (i == solutions_length) {
     if (valid_constraints(tab, dimensions, constraints)) {
       solutions.push_back(tab);
+    } else {
+      delete[] tab;
     }
     return solutions;
   }
@@ -152,7 +158,7 @@ vector<bool*> solver_efficace_openMP(bool* tab, unsigned int i, unsigned int sol
   for (int j = 0; j <= 1; ++j) {
     tab[i] += j;
     // On test les contraintes en cours de construction, si la solution est possible, 
-    // on passe à la case suivant sinon on ne fait rien et évite ainsi le parcours inutile de la branche
+    // on passe à la case suivante sinon on ne fait rien et évite ainsi le parcours inutile de la branche
     if (partially_valid_constraints(tab, dimensions, constraints)) {
       bool* newTab = new bool[solutions_length];
       #pragma omp parallel for
