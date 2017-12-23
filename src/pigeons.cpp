@@ -15,7 +15,8 @@ void print_help() {
   cout << "usage: exe -o 10 -c 12\n"
     "\t-p, --pigeons, nombre de pigeons à prendre en compte\n"
     "\t-c, --cabanes, nombre de cabanes à disposition (pigeonniers)\n"
-    "\t-m, --methode brute (1), efficace (2), brute OpenMP (3), brute MPI (4)\n"
+    "\t-m, --methode brute (1), efficace (2), brute OpenMP (3), brute MPI (4), efficace OpenMP (5)\n"
+    "\t-d, --afficher les solutions\n"
     "\t-h, --help, affiche cette aide\n" << endl;
 }
 
@@ -71,7 +72,7 @@ int main(int argc, char* argv[]) {
   dimensions.push_back(cabanes);
   constraints.push_back(Constraint(1, 1, 1, 0));
   constraints.push_back(Constraint(1, 0, 1, 1));
-  for (auto constraint : constraints) constraint.print(variables, dimensions);
+  // for (auto constraint : constraints) constraint.print(variables, dimensions);
   
   // Application de la méthode de calcul
   switch (method) {
@@ -105,7 +106,7 @@ int main(int argc, char* argv[]) {
 	// Affichage des solutions et du nombre de solutions
 	if (method == 2 || method == 5) {		
 		if (display_solutions) print_solutions_recursif(solutions_recursif, dimensions);
-    if (solutions.size() == 0) cout << "INSATISFIABLE" << endl;
+    if (solutions_recursif.size() == 0) cout << "INSATISFIABLE" << endl;
     else cout << "SATISFIABLE" << endl;
 		cout << solutions_recursif.size() << " solutions" << endl;
 	} else {

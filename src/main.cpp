@@ -11,7 +11,8 @@ using namespace std;
 void print_help() {
   cout << "usage: exe -o 10 -c 12\n"
     "\t-f, --fichier, fichier contenant les contraintes d'un problème\n"
-    "\t-m, --methode brute (1), efficace (2), brute OpenMP (3), brute MPI (4)\n"
+    "\t-m, --methode brute (1), efficace (2), brute OpenMP (3), brute MPI (4), efficace OpenMP (5)\n"
+    "\t-d, --afficher les solutions\n"
     "\t-h, --help, affiche cette aide\n" << endl;
 }
 
@@ -108,7 +109,6 @@ int main(int argc, char* argv[]) {
               if (etape == 3) variable += ligne[i];
             }
           }
-          cout << min << "||" << max << endl;
           ptrdiff_t indice_contrainte = find(variables.begin(), variables.end(), variable) - variables.begin();
           constraints.push_back(Constraint(signe, stoi(min), stoi(max), indice_contrainte));
         }
@@ -152,7 +152,7 @@ int main(int argc, char* argv[]) {
 	// Affichage des solutions et du nombre de solutions
 	if (method == 2 || method == 5) {		
 		if (display_solutions) print_solutions_recursif(solutions_recursif, dimensions);
-    if (solutions.size() == 0) cout << "INSATISFIABLE" << endl;
+    if (solutions_recursif.size() == 0) cout << "INSATISFIABLE" << endl;
     else cout << "SATISFIABLE" << endl;
 		cout << solutions_recursif.size() << " solutions" << endl;
 	} else {

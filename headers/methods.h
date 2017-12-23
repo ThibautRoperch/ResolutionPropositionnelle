@@ -100,10 +100,10 @@ void solver_brut_mpi(vector<ull> &solutions, vector<unsigned int> &dimensions, c
 }
 
 /**********************************
- * Solveur efficace
+ * Solveur efficace (approche récursive)
  */
 
-vector<bool*> solver_efficace(bool* tab, int i, int solutions_length, const vector<unsigned int> &dimensions, const vector<Constraint> &constraints) {
+vector<bool*> solver_efficace(bool* tab, unsigned int i, unsigned int solutions_length, const vector<unsigned int> &dimensions, const vector<Constraint> &constraints) {
   vector<bool*> solutions;
   vector<bool*> solutions_enfants;
 
@@ -119,9 +119,9 @@ vector<bool*> solver_efficace(bool* tab, int i, int solutions_length, const vect
     tab[i] += j;
     // On test les contraintes en cours de construction, si la solution est possible, 
     // on passe à la case suivant sinon on ne fait rien et évite ainsi le parcours inutile de la branche
-    if (test_solution_partiel(tab, dimensions)) {
+    if (partially_valid_constraints(tab, dimensions, constraints)) {
       bool* newTab = new bool[solutions_length];
-      for (int k=0; k < solutions_length; ++k) {
+      for (unsigned int k=0; k < solutions_length; ++k) {
         newTab[k] = tab[k];
       }
       solutions_enfants = solver_efficace(newTab, i+1, solutions_length, dimensions, constraints);
@@ -134,10 +134,10 @@ vector<bool*> solver_efficace(bool* tab, int i, int solutions_length, const vect
 }
 
 /*******************************************************
- * Solver efficace parallélisé avec OpenMP
+ * Solver efficace (approche récursive) parallélisé avec OpenMP
  */
 
-vector<bool*> solver_efficace_openMP(bool* tab, int i, int solutions_length, const vector<unsigned int> &dimensions, const vector<Constraint> &constraints) {
+vector<bool*> solver_efficace_openMP(bool* tab, unsigned int i, unsigned int solutions_length, const vector<unsigned int> &dimensions, const vector<Constraint> &constraints) {
   vector<bool*> solutions;
   vector<bool*> solutions_enfants;
 
@@ -153,10 +153,10 @@ vector<bool*> solver_efficace_openMP(bool* tab, int i, int solutions_length, con
     tab[i] += j;
     // On test les contraintes en cours de construction, si la solution est possible, 
     // on passe à la case suivant sinon on ne fait rien et évite ainsi le parcours inutile de la branche
-    if (test_solution_partiel(tab, dimensions)) {
+    if (partially_valid_constraints(tab, dimensions, constraints)) {
       bool* newTab = new bool[solutions_length];
       #pragma omp parallel for
-      for (int k=0; k < solutions_length; ++k) {
+      for (unsigned int k=0; k < solutions_length; ++k) {
         newTab[k] = tab[k];
       }
       solutions_enfants = solver_efficace_openMP(newTab, i+1, solutions_length, dimensions, constraints);
@@ -164,6 +164,8 @@ vector<bool*> solver_efficace_openMP(bool* tab, int i, int solutions_length, con
     }
     tab[i] -= j;
   }
+
+  return solutions;
 }
 
 #endif

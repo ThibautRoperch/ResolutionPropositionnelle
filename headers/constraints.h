@@ -27,16 +27,47 @@ class Constraint {
           for (unsigned int i = 0; i < dimensions[indice]; ++i) { // parcours de la dimension de la contrainte
             int res = 0;
             for (unsigned int j = 0; j < dimensions[dim]; ++j) { // comptage des true sur les autres dimensions
-                if (indice == 0) // première dimension
-                  res += (solution[prev_dim_size + i * dimensions[dim] + j]) ? 1 : 0;
-                else // autres dimensions
-                  res += (solution[prev_dim_size + i + dimensions[indice] * j]) ? 1 : 0;
+              if (indice == 0) // première dimension
+                res += (solution[prev_dim_size + i * dimensions[dim] + j]) ? 1 : 0;
+              else // autres dimensions
+                res += (solution[prev_dim_size + i + dimensions[indice] * j]) ? 1 : 0;
             }
             if (signe == true) {
               if (res < min || res > max) // vérification du min et du max
                 return false;
             } else {
               if (res >= min || res <= max) // vérification du min et du max
+                return false;
+            }
+          }
+          prev_dim_size += dimensions[dim];
+        }
+      }
+
+      return true;
+    }
+
+    /**
+     * Test de la contrainte sur une potentielle solution représentée en binaire
+     * Cette solution est en cours de construction ; ainsi, seulement le maximum (beta) est controlé
+     */
+    bool test_partiel(bool* solution, const std::vector<unsigned int> &dimensions) const {
+      unsigned int prev_dim_size = 0;
+      for (unsigned int dim = 0; dim < dimensions.size(); ++dim) { // pour chaque autre dimension du problème
+        if (dim != indice) { // les autres dimensions, celle-ci exclue
+          for (unsigned int i = 0; i < dimensions[indice]; ++i) { // parcours de la dimension de la contrainte
+            int res = 0;
+            for (unsigned int j = 0; j < dimensions[dim]; ++j) { // comptage des true sur les autres dimensions
+                if (indice == 0) // première dimension
+                  res += (solution[prev_dim_size + i * dimensions[dim] + j]) ? 1 : 0;
+                else // autres dimensions
+                  res += (solution[prev_dim_size + i + dimensions[indice] * j]) ? 1 : 0;
+            }
+            if (signe == true) {
+              if (res > max) // vérification du max
+                return false;
+            } else {
+              if (res <= max) // vérification du min et du max
                 return false;
             }
           }
@@ -94,10 +125,19 @@ bool valid_constraints(bool* solution, const std::vector<unsigned int> &dimensio
   return true;
 }
 
+bool partially_valid_constraints(bool* solution, const std::vector<unsigned int> &dimensions, const std::vector<Constraint> &constraints) {
+  for (auto constraint : constraints) {
+    if (constraint.test_partiel(solution, dimensions) == false) {
+      return false;
+    }
+  }
+  return true;
+}
+
 /**
  * Les contraintes appliquées à une solution représentée en binaire suivant le max
  */
-bool test_solution_partiel(bool* solution, const std::vector<unsigned int> &dimensions) {
+/*bool test_solution_partiel(bool* solution, const std::vector<unsigned int> &dimensions) {
 	unsigned int pigeons = dimensions[0];
 	unsigned int cabanes = dimensions[1];
 
@@ -124,6 +164,6 @@ bool test_solution_partiel(bool* solution, const std::vector<unsigned int> &dime
 	}
 
 	return true;
-}
+}*/
 
 #endif

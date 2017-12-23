@@ -30,6 +30,16 @@ void int_to_binary(ull nombre, bool *res, unsigned int longueur) {
 }
 
 /**
+ * Converti le tableau de booléen donné en paramètre vers sa représentation décimale
+ */
+void binary_to_int(ull &nombre, bool *res, unsigned int longueur) {
+	nombre = 0;
+	for (unsigned int i = 0; i < longueur; ++i) {
+		nombre += res[i] * pow(2, i);
+	}
+}
+
+/**
  * Affiche sur la sortie standard les solutions d'un vecteur de solutions en fonction de la taille des dimensions données
  * Une solution est affichée sur plusieurs lignes (format matriciel) lorsque le problème est à deux dimensions (comme pigeons/cabanes)
  */
