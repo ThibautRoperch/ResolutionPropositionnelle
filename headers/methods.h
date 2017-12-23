@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <vector>
 #include <numeric>
+#include <algorithm>
 #include <functional>
 #include <cmath>
 #include <omp.h>
@@ -51,7 +52,7 @@ void solver_brut(vector<ull> &solutions, const vector<unsigned int> &dimensions,
  * Solver brut (approche naïve) parallélisé avc openMP
  */
 
-void solver_brut_openmp(vector<ull> &solutions, const vector<unsigned int> &dimensions, const vector<Constraint> &constraints) {
+void solver_brut_openMP(vector<ull> &solutions, const vector<unsigned int> &dimensions, const vector<Constraint> &constraints) {
   unsigned int longueur_solutions = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
   ull nb_possibilites = pow(2, longueur_solutions) - 1;
 
@@ -86,16 +87,6 @@ void solver_brut_openmp(vector<ull> &solutions, const vector<unsigned int> &dime
   cout << endl;
 }
 
-
-/**********************************
- * Solveur efficace
- */
-
-// raisonner en deux dimensions
-// un premier pigeon a n emplacements possibles, vérifier l'emplacement 1, si les contraintes sont ok, alors les autres emplacements sont solution
-// le second pigeon a n-1 emplacements possibles
-
-
 /*******************************************************
  * Solver brut (approche naïve) parallélisé avec MPI
  */
@@ -104,8 +95,75 @@ void solver_brut_openmp(vector<ull> &solutions, const vector<unsigned int> &dime
  * Calcul de toutes les possibilités et nettoyage pour ne garder que les solutions
  */
 void solver_brut_mpi(vector<ull> &solutions, vector<unsigned int> &dimensions, const vector<Constraint> &constraints) {
-  MPI_Reducer reducer;
-  reducer.solver_brut(solutions, dimensions, constraints);
+	MPI_Reducer reducer;
+	reducer.solver_brut(solutions, dimensions, constraints);
+}
+
+/**********************************
+ * Solveur efficace
+ */
+
+vector<bool*> solver_efficace(bool* tab, int i, int solutions_length, const vector<unsigned int> &dimensions, const vector<Constraint> &constraints) {
+  vector<bool*> solutions;
+  vector<bool*> solutions_enfants;
+
+  // Si on est à la fin, on stock la solution
+  if (i == solutions_length) {
+    if (valid_constraints(tab, dimensions, constraints)) {
+      solutions.push_back(tab);
+    }
+    return solutions;
+  }
+  
+  for (int j = 0; j <= 1; ++j) {
+    tab[i] += j;
+    // On test les contraintes en cours de construction, si la solution est possible, 
+    // on passe à la case suivant sinon on ne fait rien et évite ainsi le parcours inutile de la branche
+    if (test_solution_partiel(tab, dimensions)) {
+      bool* newTab = new bool[solutions_length];
+      for (int k=0; k < solutions_length; ++k) {
+        newTab[k] = tab[k];
+      }
+      solutions_enfants = solver_efficace(newTab, i+1, solutions_length, dimensions, constraints);
+      solutions.insert(solutions.end(), solutions_enfants.begin(), solutions_enfants.end());
+    }
+    tab[i] -= j;
+  }
+
+  return solutions;
+}
+
+/*******************************************************
+ * Solver efficace parallélisé avec OpenMP
+ */
+
+vector<bool*> solver_efficace_openMP(bool* tab, int i, int solutions_length, const vector<unsigned int> &dimensions, const vector<Constraint> &constraints) {
+  vector<bool*> solutions;
+  vector<bool*> solutions_enfants;
+
+  // Si on est à la fin, on stock la solution
+  if (i == solutions_length) {
+    if (valid_constraints(tab, dimensions, constraints)) {
+      solutions.push_back(tab);
+    }
+    return solutions;
+  }
+
+  for (int j = 0; j <= 1; ++j) {
+    tab[i] += j;
+    // On test les contraintes en cours de construction, si la solution est possible, 
+    // on passe à la case suivant sinon on ne fait rien et évite ainsi le parcours inutile de la branche
+    if (test_solution_partiel(tab, dimensions)) {
+      bool* newTab = new bool[solutions_length];
+      #pragma omp parallel for
+      for (int k=0; k < solutions_length; ++k) {
+        newTab[k] = tab[k];
+      }
+      solutions_enfants = solver_efficace_openMP(newTab, i+1, solutions_length, dimensions, constraints);
+      solutions.insert(solutions.end(), solutions_enfants.begin(), solutions_enfants.end());
+    }
+    tab[i] -= j;
+  }
 }
 
 #endif

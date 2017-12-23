@@ -24,6 +24,7 @@ int main(int argc, char* argv[]) {
   vector<Constraint> constraints;
   bool display_solutions = false;
   vector<ull> solutions;
+	vector<bool*> solutions_recursif;
   int opt, indice;
 
   // Traitement des options
@@ -123,30 +124,43 @@ int main(int argc, char* argv[]) {
   switch (method) {
     case 1: // Méthode brute
       solver_brut(solutions, dimensions, constraints);    
-    break;
-    case 2: // Méthode efficace
-      // solver_efficace(solutions, dimensions ,constraints);
-    break;
+      break;
+		case 2: // Méthode efficace
+			{
+				int solutions_length = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
+				bool* matriceVide = new bool[solutions_length];	
+				solutions_recursif = solver_efficace(matriceVide, 0, solutions_length, dimensions, constraints);
+			}
+      break;
     case 3: // Méthode brute parallélisée avec OpenMP
-       solver_brut_openmp(solutions, dimensions, constraints);
-    break;
+      solver_brut_openMP(solutions, dimensions, constraints);
+      break;
     case 4: // Méthode brute parallélisée avec MPI
       solver_brut_mpi(solutions, dimensions, constraints);
-    break;
+      break;
+		case 5: // Méthode efficace parallélisée avec OpenMP
+			{
+				int solutions_length = accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], multiplies<int>());
+				bool* matriceVide = new bool[solutions_length];	
+				solutions_recursif = solver_efficace_openMP(matriceVide, 0, solutions_length, dimensions, constraints);
+			}		
+		  break;
     default:
-    break;
+      break;
   }
 
-  // Affichage des solutions et du nombre de solutions
-  if (display_solutions) print_solutions(solutions, dimensions);
-  
-  if (solutions.size() == 0) {
-    cout << "INSATISFIABLE" << endl;
-  } else {
-    cout << "SATISFIABLE" << endl;
-  }
-
-  cout << solutions.size() << " solutions" << endl;
+	// Affichage des solutions et du nombre de solutions
+	if (method == 2 || method == 5) {		
+		if (display_solutions) print_solutions_recursif(solutions_recursif, dimensions);
+    if (solutions.size() == 0) cout << "INSATISFIABLE" << endl;
+    else cout << "SATISFIABLE" << endl;
+		cout << solutions_recursif.size() << " solutions" << endl;
+	} else {
+		if (display_solutions) print_solutions(solutions, dimensions);
+    if (solutions.size() == 0) cout << "INSATISFIABLE" << endl;
+    else cout << "SATISFIABLE" << endl;
+		cout << solutions.size() << " solutions" << endl;
+	}
 
   return EXIT_SUCCESS;
 }

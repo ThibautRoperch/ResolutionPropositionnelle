@@ -59,4 +59,25 @@ void print_solutions(const std::vector<ull> &solutions, const std::vector<unsign
   }
 }
 
+void print_solutions_recursif(const std::vector<bool*> &solutions, const std::vector<unsigned int> &dimensions) {
+	unsigned int solutions_length = std::accumulate(dimensions.begin()+1, dimensions.end(), dimensions[0], std::multiplies<int>());
+
+	for (auto sol : solutions) {		
+		if (dimensions.size() == 2) {
+			for (unsigned int i = 0; i < dimensions[0]; ++i) {
+				for (unsigned int j = 0; j < dimensions[1]; ++j) {
+					std::cout << sol[i*dimensions[1] + j] << " ";
+				}
+				std::cout << std::endl;
+			}
+			std::cout << std::endl;
+		} else {
+			for (unsigned int i = 0; i < solutions_length; ++i) {
+				std::cout << sol[i] << " ";
+			}
+			std::cout << std::endl;
+		}
+	}
+}
+
 #endif
