@@ -90,11 +90,11 @@ Un exemple de fichier avec les explications de syntaxe est disponible : `pigeons
 
 Comme nous pouvons le constater avec la baterrie de tests effectuée et le fichier `comparaison.pdf`, les méthodes non parallélisées sont les plus rapides pour les problèmes simples (4 pigeons / 4 pigeonniers et moins), la méthode récursive étant la plus rapide de toutes (`bash benchmark.sh 4`). On constate aussi que la version de la méthode brute parallélisation avec openMP est plus rapide que sa version parallélisée avec MPI.
 
-![Résolution de problèmes à petites dimensions](https://github.com/ThibautRoperch/ResolutionPropositionnelle/blob/master/images/Illustration%201.png)
+![Résolution de problèmes à petites dimensions](https://github.com/ThibautRoperch/ResolutionPropositionnelle/blob/master/images/Illustration%201.png "Résolution de problèmes à petites dimensions")
 
-Au-delà de 4 pigeons et 4 pigeonniers (`bash benchmark.sh 5`), ce sont les méthodes parallélisées qui sont les plus rapides. La méthode récursive est ici aussi la plus rapide de toutes. On constate également que la méthode brute parallélisée avec MPI devient plus performante que sa version parallélisée avec OpenMP.
+Au-delà de 4 pigeons et 4 pigeonniers (`bash benchmark.sh 5`), les méthodes parallélisées deviennent plus efficaces, mais la méthode récursive non parallélisée est toujours la plus rapide de toutes. On constate également que la méthode brute parallélisée avec MPI devient plus performante que sa version parallélisée avec OpenMP.
 
-![Résolution de problèmes à grandes dimensions](https://github.com/ThibautRoperch/ResolutionPropositionnelle/blob/master/images/Illustration%202.png)
+![Résolution de problèmes à grandes dimensions](https://github.com/ThibautRoperch/ResolutionPropositionnelle/blob/master/images/Illustration%202.png "Résolution de problèmes à grandes dimensions")
 
 Pour résumer, quelque soit la taille des dimensions du problème, la méthode récursive (efficace) est la meilleure. En effet, dans cette méthode on teste les contraintes pendant la construction de la solution, ce qui permet d'éviter de créer pleins de solutions inutilement.
 
