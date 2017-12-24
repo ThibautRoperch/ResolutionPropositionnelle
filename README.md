@@ -11,7 +11,7 @@ Réalisé dans le cadre du cours de parallélisme, M2 Info
 * Pierre-Olivier Mainfroid
 * Thibaut Roperch
 
-## Utilsiation
+## Utilisation
 
 Le script `launch.sh` permet d'utiliser le solveur facilement (compilation et exécution du projet) :
 
