@@ -21,9 +21,10 @@ Le script `perf.sh` permet, pour chaque méthode, de lancer et mesurer le temps 
 
     bash perf.sh
 
-Le script `benchmark.sh` permet de tester et comparer toutes les méthodes pour une instance du problème des pigeons et des pigeonniers (pigeons=pigeonniers=4 par défaut) via le graphique qu'il génère (l'entier donné correspond au nombre max de pigeons et de pigeonniers, 5 restant resolvable par la méthode brute en un temps raisonnable, au-delà prevoir plus de deux heures) :
+Le script `benchmark.sh` permet de tester et comparer toutes les méthodes pour une instance du problème des pigeons et des pigeonniers (pigeons=pigeonniers=4 par défaut) via le graphique qu'il génère :
 
-    bash benchmark.sh 5
+    bash benchmark.sh 5       # l'entier donné correspond au nombre max de pigeons et de pigeonniers, 5 restant resolvable par la méthode brute en un temps raisonnable, au-delà prevoir plus de deux heures
+
 
 ### Compilation manuelle
 
