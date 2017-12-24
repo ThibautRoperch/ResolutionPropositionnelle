@@ -22,6 +22,7 @@ Le script `perf.sh` permet, pour chaque méthode, de lancer et mesurer le temps 
     bash perf.sh
 
 Le script `benchmark.sh` permet de tester et comparer toutes les méthodes pour une instance du problème des pigeons et des pigeonniers (pigeons=pigeonniers=4 par défaut) via le graphique qu'il génère :
+
     bash benchmark.sh 5          # l'entier donné correspond au nombre de pigeons et de pigeonniers, 5 restant resolvable par la méthode brute en un temps resonnable, au delà prevoir plus de deux heures.
 
 ### Compilation manuelle
@@ -167,10 +168,3 @@ pow(2, produit de la taille des dimensions)-1 < 2^(64)-1 (nombre de possibilité
 ### Approche efficace/récursive
 
 Avec cette approche, le nombre de possibilités n'a pas besoin d'être calculé et toutes les possibilités n'ont pas besoin d'être instanciées. De plus, une solution n'est pas représentée par un entier (`ull`), mais par un tableau de `bool`. Ainsi, la limite du type `ull` (2^(64)-1) n'est pas présente pour cette approche.
-
-## TODO
-
-Dans solveur_efficace_openMP :
-      solutions_enfants = solver_efficace(newTab, i+1, solutions_length, dimensions, constraints);
-c normal ?
-refaire les tests en conséquence
