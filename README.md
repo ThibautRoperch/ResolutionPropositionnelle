@@ -6,12 +6,12 @@ Réalisé dans le cadre du cours de parallélisme, M2 Info
 
 ## Contributeurs
 
-*Alice Bazanté
-*Pierre Granier--Richard
-*Pierre-Olivier Mainfroid
-*Thibaut Roperch
+* Alice Bazanté
+* Pierre Granier--Richard
+* Pierre-Olivier Mainfroid
+* Thibaut Roperch
 
-## Contenu
+## Utilsiation
 
 Le script `launch.sh` permet d'utiliser le solveur facilement (compilation et exécution du projet) :
 
@@ -23,13 +23,13 @@ Le script `perf.sh` permet, pour chaque méthode, de lancer et mesurer le temps 
 
 Le script `benchmark.sh` permet de tester et comparer toutes les méthodes pour une instance du problème des pigeons et des pigeonniers (pigeons=pigeonniers=4 par défaut) via le graphique qu'il génère :
 
-    bash benchmark.sh 5             # l'entier donné correspond au plus grand problème (nombre max de pigeons et de pigeonniers)
+    bash benchmark.sh 5          # l'entier donné correspond au plus grand problème (nombre max de pigeons et de pigeonniers)
 
-## Compilation manuelle
+### Compilation manuelle
 
     make
 
-## Exécution manuelle d'une instance du problème des pigeons et des pigeonniers
+### Exécution manuelle d'une instance du problème des pigeons et des pigeonniers
 
 Pour les méthodes non-MPI (méthodes 1, 2, 3 et 5) :
 
@@ -37,7 +37,7 @@ Pour les méthodes non-MPI (méthodes 1, 2, 3 et 5) :
 
 Pour la méthode MPI (méthode 4) :
 
-    mpirun -n 4 ./bin/pigeons.exe -p 1 -c 2 -m 4 -d
+    mpirun -n 8 ./bin/pigeons.exe -p 1 -c 2 -m 4 -d
 
 Avec :
 * -p le nombre de pigeons (1) 
@@ -45,7 +45,7 @@ Avec :
 * -m l'identifiant de la méthode de calcul (1, 4)
 * -d pour afficher les solutions sur la sortie standard
 
-## Exécution manuelle d'une instance d'un autre problème
+### Exécution manuelle d'une instance d'un autre problème
 
 Pour les méthodes non-MPI (méthodes 1, 2, 3 et 5) :
 
@@ -53,7 +53,7 @@ Pour les méthodes non-MPI (méthodes 1, 2, 3 et 5) :
 
 Pour la méthode MPI (méthode 4) :
 
-    mpirun -n 4 ./bin/main.exe -f fichier -m 4 -d
+    mpirun -n 8 ./bin/main.exe -f fichier -m 4 -d
 
 Avec :
 * -f le fichier contenant la représentation des variables et des contraintes du problème
@@ -65,7 +65,7 @@ Un exemple de fichier avec les explications de syntaxe est disponible : `pigeons
 ## Résultats
 
     p = pigeon
-    c = pigeonnier
+    c = pigeonnier (cabane)
 
     m1 = méthode brute (approche naïve)
     m2 = méthode efficace (récursive) 
@@ -76,21 +76,25 @@ Un exemple de fichier avec les explications de syntaxe est disponible : `pigeons
     une ligne de matrice = un pigeon
     une colonne de matrice = un pigeonnier
 
-| p et c | Nombre de poss | Nombre de solutions | Temps d'exec m1 | Temps d'exec m2 | Temps d'exec m3 | Temps d'exec m4 | Temps d'exec m5 |
-|--------|----------------|---------------------|-----------------|-----------------|-----------------|-----------------|-----------------|
-| 2p 2c  | 15             | 2 solutions         |     0m00.001s   |    0m00.006s    |     0m00.018s   |     0m00.071s   |    0m00.030s    |
-| 3p 3c  | 511            | 6 solutions         |     0m00.001s   |    0m00.007s    |     0m00.020s   |     0m00.076s   |    0m00.036s    |
-| 4p 4c  | 65535          | 24 solutions        |     0m00.014s   |    0m00.007s    |     0m00.035s   |     0m00.077s   |    0m00.046s    |
-| 5p 5c  | 33554431       | 120 solutions       |     0m03.157s   |    0m00.009s    |     0m01.440s   |     0m01.211s   |    0m00.068s    |
-| 6p 6c  | 68719476735    | 720 solutions       |   144m39.399s   |    0m00.032s    |    29m23.933s   |    11m28.296s   |    0m00.159s    |
-| 7p 7c  | 562949953421311| 5040 solutions      |       -         |    0m00.274s    |    +12h         |    13m08.667s   |    0m01.633s    |
-| 8p 8c  |       -        | 40320 solutions     |       -         |    0m01.877s    |        -        |    14m01.674s   |    0m02.901s    |
+| p et c | Nombre de possibilités | Nombre de solutions | Temps d'exec m1 | Temps d'exec m2 | Temps d'exec m3 | Temps d'exec m4 | Temps d'exec m5 |
+|--------|------------------------|---------------------|-----------------|-----------------|-----------------|-----------------|-----------------|
+| 2p 2c  | 15                     | 2                   |     0m00.001s   |    0m00.006s    |     0m00.018s   |     0m00.071s   |    0m00.030s    |
+| 3p 3c  | 511                    | 6                   |     0m00.001s   |    0m00.007s    |     0m00.020s   |     0m00.076s   |    0m00.036s    |
+| 4p 4c  | 65535                  | 24                  |     0m00.014s   |    0m00.007s    |     0m00.035s   |     0m00.077s   |    0m00.046s    |
+| 5p 5c  | 33554431               | 120                 |     0m03.157s   |    0m00.009s    |     0m01.440s   |     0m01.211s   |    0m00.068s    |
+| 6p 6c  | 68719476735            | 720                 |   144m39.399s   |    0m00.032s    |    29m23.933s   |    11m28.296s   |    0m00.159s    |
+| 7p 7c  | 562949953421311        | 5040                |       -         |    0m00.274s    |    +12h         |    13m08.667s   |    0m01.633s    |
+| 8p 8c  |       -                | 40320               |       -         |    0m01.877s    |        -        |    14m01.674s   |    0m02.901s    |
 
 ## Interprétation des résultats
 
 Comme nous pouvons le constater avec la baterrie de tests effectuée et le fichier `comparaison.pdf`, les méthodes non parallélisées sont les plus rapides pour les problèmes simples (4 pigeons / 4 pigeonniers et moins), la méthode récursive étant la plus rapide de toutes (`bash benchmark.sh 4`). On constate aussi que la version de la méthode brute parallélisation avec openMP est plus rapide que sa version parallélisée avec MPI.
 
+![Résolution de problèmes à petites dimensions](https://github.com/ThibautRoperch/ResolutionPropositionnelle/blob/master/images/Illustration%201.png)
+
 Au-delà de 4 pigeons et 4 pigeonniers (`bash benchmark.sh 5`), ce sont les méthodes parallélisées qui sont les plus rapides. La méthode récursive est ici aussi la plus rapide de toutes. On constate également que la méthode brute parallélisée avec MPI devient plus performante que sa version parallélisée avec OpenMP.
+
+![Résolution de problèmes à grandes dimensions](https://github.com/ThibautRoperch/ResolutionPropositionnelle/blob/master/images/Illustration%202.png)
 
 Pour résumer, quelque soit la taille des dimensions du problème, la méthode récursive (efficace) est la meilleure. En effet, dans cette méthode on teste les contraintes pendant la construction de la solution, ce qui permet d'éviter de créer pleins de solutions inutilement.
 
