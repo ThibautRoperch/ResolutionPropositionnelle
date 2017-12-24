@@ -21,9 +21,9 @@ Le script `perf.sh` permet, pour chaque méthode, de lancer et mesurer le temps 
 
     bash perf.sh
 
-Le script `benchmark.sh` permet de tester et comparer toutes les méthodes pour une instance du problème des pigeons et des pigeonniers (pigeons=pigeonniers=4 par défaut) via le graphique qu'il génère :
+Le script `benchmark.sh` permet de tester et comparer toutes les méthodes pour une instance du problème des pigeons et des pigeonniers (pigeons=pigeonniers=4 par défaut) via le graphique qu'il génère (l'entier donné correspond au nombre max de pigeons et de pigeonniers) :
 
-    bash benchmark.sh 5          # l'entier donné correspond au plus grand problème (nombre max de pigeons et de pigeonniers)
+    bash benchmark.sh 5
 
 ### Compilation manuelle
 
@@ -53,10 +53,10 @@ Pour les méthodes non-MPI (méthodes 1, 2, 3 et 5) :
 
 Pour la méthode MPI (méthode 4) :
 
-    mpirun -n 8 ./bin/main.exe -f fichier -m 4 -d
+    mpirun -n 8 ./bin/main.exe -f fichier.txt -m 4 -d
 
 Avec :
-* -f le fichier contenant la représentation des variables et des contraintes du problème
+* -f le fichier contenant la représentation des variables et des contraintes du problème (fichier.txt)
 * -m l'identifiant de la méthode de calcul (1, 4)
 * -d pour afficher les solutions sur la sortie standard
 
@@ -92,7 +92,7 @@ Comme nous pouvons le constater avec la baterrie de tests effectuée et le fichi
 
 ![Résolution de problèmes à petites dimensions](https://github.com/ThibautRoperch/ResolutionPropositionnelle/blob/master/images/Illustration%201.png "Résolution de problèmes à petites dimensions")
 
-Au-delà de 4 pigeons et 4 pigeonniers (`bash benchmark.sh 5`), les méthodes parallélisées deviennent plus efficaces, mais la méthode récursive non parallélisée est toujours la plus rapide de toutes. On constate également que la méthode brute parallélisée avec MPI devient plus performante que sa version parallélisée avec OpenMP.
+Au-delà de 4 pigeons et 4 pigeonniers (`bash benchmark.sh 5` ou plus, mais le temps de calcul est plus long), les méthodes parallélisées deviennent plus efficaces, mais la méthode récursive non parallélisée est toujours la plus rapide de toutes. On constate également que la méthode brute parallélisée avec MPI devient plus performante que sa version parallélisée avec OpenMP.
 
 ![Résolution de problèmes à grandes dimensions](https://github.com/ThibautRoperch/ResolutionPropositionnelle/blob/master/images/Illustration%202.png "Résolution de problèmes à grandes dimensions")
 
@@ -102,7 +102,7 @@ Nous pouvons ainsi établir le classement général suivant, pour des instances 
 1. Méthode efficace (récursive), rapide, prend beaucoup moins de place mémoire que méthode brute, capable de résoudre des problèmes avec un nombre de pigeons et de pigeonniers élevés
 2. Méthode efficace (récursive) parallélisée avec OpenMP, moins rapide que la version non parallélisée, applicable à toutes tailles de problèmes
 3. Méthode brute (naïve) parallélisée avec OpenMP, à privilégier à sa version MPI pour les petites instances (5 pigeons / 5 pigeonniers et moins)
-4. Méthode brute (naïve) parallélisée avec MPI, à privilégier à sa version OpenMP pour les grosses instances (6 pigeons / 6 pigeonniers et plus), mais est incapable de résoudre un problème de 8 pigeons et 8 pigeonniers ou plus, donc son intérêt est assez limité
+4. Méthode brute (naïve) parallélisée avec MPI, à privilégier à sa version OpenMP pour les grosses instances (6 pigeons / 6 pigeonniers et plus)
 5. Méthode brute (naïve) non parallélisée, prend beaucoup de temps et de place mémoire très rapidement, et ne peut pas résoudre de problèmes de grandes dimensions.
 
 ## Travail effectué
@@ -167,11 +167,6 @@ pow(2, produit de la taille des dimensions)-1 < 2^(64)-1 (nombre de possibilité
 
 ### Approche efficace/récursive
 
+produit de la taille des dimensions < 4 294 967 295 (taille d'une solution au format binaire)
+
 Avec cette approche, le nombre de possibilités n'a pas besoin d'être calculé et toutes les possibilités n'ont pas besoin d'être instanciées. De plus, une solution n'est pas représentée par un entier (`ull`), mais par un tableau de `bool`. Ainsi, la limite du type `ull` (2^(64)-1) n'est pas présente pour cette approche.
-
-## TODO
-
-Dans solveur_efficace_openMP :
-      solutions_enfants = solver_efficace(newTab, i+1, solutions_length, dimensions, constraints);
-c normal ?
-refaire les tests en conséquence
