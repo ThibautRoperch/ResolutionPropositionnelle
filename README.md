@@ -22,8 +22,7 @@ Le script `perf.sh` permet, pour chaque méthode, de lancer et mesurer le temps 
     bash perf.sh
 
 Le script `benchmark.sh` permet de tester et comparer toutes les méthodes pour une instance du problème des pigeons et des pigeonniers (pigeons=pigeonniers=4 par défaut) via le graphique qu'il génère :
-
-    bash benchmark.sh 5          # l'entier donné correspond au plus grand problème (nombre max de pigeons et de pigeonniers)
+    bash benchmark.sh 5          # l'entier donné correspond au nombre de pigeons et de pigeonniers, 5 restant resolvable par la méthode brute en un temps resonnable, au delà prevoir plus de deux heures.
 
 ### Compilation manuelle
 
@@ -102,7 +101,7 @@ Nous pouvons ainsi établir le classement général suivant, pour des instances 
 1. Méthode efficace (récursive), rapide, prend beaucoup moins de place mémoire que méthode brute, capable de résoudre des problèmes avec un nombre de pigeons et de pigeonniers élevés
 2. Méthode efficace (récursive) parallélisée avec OpenMP, moins rapide que la version non parallélisée, applicable à toutes tailles de problèmes
 3. Méthode brute (naïve) parallélisée avec OpenMP, à privilégier à sa version MPI pour les petites instances (5 pigeons / 5 pigeonniers et moins)
-4. Méthode brute (naïve) parallélisée avec MPI, à privilégier à sa version OpenMP pour les grosses instances (6 pigeons / 6 pigeonniers et plus), mais est incapable de résoudre un problème de 8 pigeons et 8 pigeonniers ou plus, donc son intérêt est assez limité
+4. Méthode brute (naïve) parallélisée avec MPI, à privilégier à sa version OpenMP pour les grosses instances (6 pigeons / 6 pigeonniers et plus).
 5. Méthode brute (naïve) non parallélisée, prend beaucoup de temps et de place mémoire très rapidement, et ne peut pas résoudre de problèmes de grandes dimensions.
 
 ## Travail effectué
