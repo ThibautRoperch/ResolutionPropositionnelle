@@ -32,7 +32,7 @@ do
 		echo -e "\tRésolution du problème pigeons = pigeonniers = $pp"
         	if [ "$methode" = "4" ]
 		then
-			res=$({ /usr/bin/time -f "%e" mpirun -n 4 ./$executable -p $pp -c $pp -m $methode >> /dev/null; } 2>&1)
+			res=$({ /usr/bin/time -f "%e" mpirun -n 8 ./$executable -p $pp -c $pp -m $methode >> /dev/null; } 2>&1)
 		else
 			res=$({ /usr/bin/time -f "%e" ./$executable -p $pp -c $pp -m $methode >> /dev/null; } 2>&1)
 		fi
