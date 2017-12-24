@@ -30,7 +30,7 @@ do
 	for pp in $dimensions
 	do
 		echo -e "\tRésolution du problème pigeons = pigeonniers = $pp"
-        if [ "$methode" = "4" ]
+        	if [ "$methode" = "4" ]
 		then
 			res=$({ /usr/bin/time -f "%e" mpirun -n 4 ./$executable -p $pp -c $pp -m $methode >> /dev/null; } 2>&1)
 		else
