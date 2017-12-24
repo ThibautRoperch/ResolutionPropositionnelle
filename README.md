@@ -21,9 +21,9 @@ Le script `perf.sh` permet, pour chaque méthode, de lancer et mesurer le temps 
 
     bash perf.sh
 
-Le script `benchmark.sh` permet de tester et comparer toutes les méthodes pour une instance du problème des pigeons et des pigeonniers (pigeons=pigeonniers=4 par défaut) via le graphique qu'il génère (l'entier donné correspond au nombre max de pigeons et de pigeonniers) :
+Le script `benchmark.sh` permet de tester et comparer toutes les méthodes pour une instance du problème des pigeons et des pigeonniers (pigeons=pigeonniers=4 par défaut) via le graphique qu'il génère (l'entier donné correspond au nombre max de pigeons et de pigeonniers, 5 restant resolvable par la méthode brute en un temps raisonnable, au-delà prevoir plus de deux heures) :
 
-    bash benchmark.sh 5            # 5 restant resolvable par la méthode brute en un temps resonnable, au delà prevoir plus de deux heures.
+    bash benchmark.sh 5
 
 ### Compilation manuelle
 
@@ -92,7 +92,7 @@ Comme nous pouvons le constater avec la baterrie de tests effectuée et le fichi
 
 ![Résolution de problèmes à petites dimensions](https://github.com/ThibautRoperch/ResolutionPropositionnelle/blob/master/images/Illustration%201.png "Résolution de problèmes à petites dimensions")
 
-Au-delà de 4 pigeons et 4 pigeonniers (`bash benchmark.sh 5` ou plus, mais le temps de calcul est plus long), les méthodes parallélisées deviennent plus efficaces, mais la méthode récursive non parallélisée est toujours la plus rapide de toutes. On constate également que la méthode brute parallélisée avec MPI devient plus performante que sa version parallélisée avec OpenMP.
+Au-delà de 4 pigeons et 4 pigeonniers (`bash benchmark.sh 5`, ou plus), les méthodes parallélisées deviennent plus efficaces, mais la méthode récursive non parallélisée est toujours la plus rapide de toutes. On constate également que la méthode brute parallélisée avec MPI devient plus performante que sa version parallélisée avec OpenMP.
 
 ![Résolution de problèmes à grandes dimensions](https://github.com/ThibautRoperch/ResolutionPropositionnelle/blob/master/images/Illustration%202.png "Résolution de problèmes à grandes dimensions")
 
